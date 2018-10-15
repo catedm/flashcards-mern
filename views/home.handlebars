@@ -1,0 +1,60 @@
+<nav class="uk-navbar-container uk-margin" uk-navbar="mode: click">
+  <div class="uk-navbar-center">
+    <ul class="uk-navbar-nav">
+      <li class="uk-active"><a href="/">Decks</a></li>
+      <li><a href="#add-deck-modal" uk-toggle="">Add Deck</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="add-deck-modal" id="add-deck-modal" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body">
+    <h2 class="uk-modal-title">Add Deck</h2>
+    <form class="add-deck-form" action="/add-deck" method="post">
+      <div class="uk-margin">
+        <input class="add-deck-input uk-input" type="text" name="title" placeholder="Name">
+        </div>
+        <div class="add-deck-submit-alert"></div>
+        <p class="uk-text-right">
+          <button class="add-deck-cancel uk-margin-right uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+          <button class="add-deck-submit uk-button uk-button-primary" type="submit" disabled>Add</button>
+        </p>
+    </form>
+  </div>
+</div>
+<div class="rename-deck-modal" id="rename-deck-modal" uk-modal="">
+  <div class="uk-modal-dialog uk-modal-body">
+    <h2 class="uk-modal-title">Rename Deck</h2>
+    <div class="uk-margin">
+      <input class="rename-deck-input uk-input" type="text" placeholder="Name">
+      <input class="deck-id" type="hidden">
+      </div>
+      <p class="uk-text-right">
+        <button class="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Nevermind</button>
+        <button class="rename-deck-submit uk-button uk-button-primary" type="button">Rename</button>
+      </p>
+    </div>
+  </div>
+  <div class="uk-section uk-padding-small">
+    <div class="uk-container">
+      {{#if deckAdded}}
+      <div class="uk-alert-success uk-margin" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p>Deck added.</p>
+      </div>
+      {{/if}}
+      <table class="deck-table uk-table uk-table-hover uk-table-divider">
+        <thead>
+          <tr>
+            <th>Decks</th>
+            <th>Cards</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+        <tbody class="deck-table-body uk-table-middle">
+          {{#if decks}}
+            <td>Test</td>
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
+  </div>
