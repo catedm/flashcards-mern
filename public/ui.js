@@ -201,3 +201,36 @@ addDeckCancel.addEventListener('click', function(e) {
   addDeckSubmitAlert.style.display = 'block';
   addDeckInput.value = '';
 });
+
+deckTableBody.addEventListener('click', deckOptionsLinkClick);
+
+function deckOptionsLinkClick(e) {
+  if
+  // this guard clause prevents an error when clicking on the SVG icon
+  // in the options button
+  (e.target.tagName === 'svg') {
+    return;
+  }
+  else if
+  (e.target.className.includes('rename')) {
+    // Get and set current deck name in Rename Deck modal
+    var name = e.target.closest('tr').firstElementChild.textContent;
+    // Set the name in the ui
+    renameDeckInput.value = name;
+    // Set the id to the hidden input field in the rename modal
+    // We need this in the rename deck modal in order to access the deck in the data structure using the id
+    renameDeckIdInput.value = e.target.closest('tr').dataset.id;
+  }
+  else if
+  (e.target.className.includes('delete')) {
+    var id = parseInt(e.target.closest('tr').dataset.id);
+    UIkit.modal.confirm('Are you sure you want to delete this deck?').then(function() {
+      StorageCTRL.removeDeckById(id);
+      DeckCTRL.removeDeckById(id);
+      UICtrl.removeDeck(id);
+      UICtrl.showAlert('Deck removed', 'uk-alert-success');
+    }, function() {
+      return;
+    });
+  }
+}

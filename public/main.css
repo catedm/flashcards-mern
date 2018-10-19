@@ -1,6 +1,11 @@
+/* this styles the invisible div on top of the disabled add deck button */
 .add-deck-submit-alert {
   position: absolute;
   right: 30px;
   width: 91px;
   height: 40px;
+}
+
+.uk-nav li>a {
+  display: inline-block;
 }
