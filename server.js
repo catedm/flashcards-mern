@@ -6,8 +6,8 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
-const app = express();
 const mongoose = require('mongoose');
+const app = express();
 
 mongoose.connect('mongodb://localhost/flashcard-app')
   .then(() => console.log('Connected to MongoDB...'))
@@ -37,7 +37,7 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('views engine', 'handlebars');
 
 // Set public assets to be served
-app.use(express.static('public'));
+app.use(express.static('public'))
 
 // enable put and delete requests from forms
 app.use(methodOverride('_method'));

@@ -123,7 +123,9 @@ const renameDeckInput = document.querySelector('.rename-deck-input');
 const renameDeckSubmit = document.querySelector('.rename-deck-submit');
 const renameDeckLink = document.querySelector('.rename-deck');
 const renameDeckModal = document.querySelector('.rename-deck-modal');
-const renameDeckIdInput = document.querySelector('.deck-id');
+const renameDeckIdInput = document.querySelector('.rename-deck-id');
+const renameDeckSubmitAlert = document.querySelector('.rename-deck-submit-alert');
+const deleteDeckIdInput = document.querySelector('.delete-deck-id');
 const deckTableBody = document.querySelector('.deck-table-body');
 const deckTable = document.querySelector('.deck-table');
 const deckSuccessContainer = document.querySelector('.deck-success-container');
@@ -195,42 +197,54 @@ addDeckSubmitAlert.addEventListener('click', function(e) {
   showAlert('Please enter a deck name.', 'uk-alert-primary');
 });
 
-
 addDeckCancel.addEventListener('click', function(e) {
   addDeckSubmit.disabled = true;
   addDeckSubmitAlert.style.display = 'block';
   addDeckInput.value = '';
 });
 
+renameDeckSubmitAlert.addEventListener('click', function(e) {
+  showAlert('Please rename your deck.', 'uk-alert-primary');
+});
+
+renameDeckInput.addEventListener('keyup', function(e) {
+  if (this.value.trim().length === 0) {
+    renameDeckSubmit.disabled = true;
+    renameDeckSubmitAlert.style.display = 'block';
+  } else if (this.value.trim().length > 0) {
+    renameDeckSubmit.disabled = false;
+    renameDeckSubmitAlert.style.display = 'none';
+  }
+});
+
 deckTableBody.addEventListener('click', deckOptionsLinkClick);
 
 function deckOptionsLinkClick(e) {
-  if
   // this guard clause prevents an error when clicking on the SVG icon
   // in the options button
+  if
   (e.target.tagName === 'svg') {
     return;
   }
   else if
   (e.target.className.includes('rename')) {
-    // Get and set current deck name in Rename Deck modal
+    // Make sure rename submit button is active
+    renameDeckSubmit.disabled = false;
+    renameDeckSubmitAlert.style.display = 'none';
+    // Get and set current deck name and id in Rename Deck modal
     var name = e.target.closest('tr').firstElementChild.textContent;
+    var id = e.target.closest('tr').dataset.id;
     // Set the name in the ui
     renameDeckInput.value = name;
     // Set the id to the hidden input field in the rename modal
     // We need this in the rename deck modal in order to access the deck in the data structure using the id
-    renameDeckIdInput.value = e.target.closest('tr').dataset.id;
+    renameDeckIdInput.value = id;
   }
   else if
   (e.target.className.includes('delete')) {
-    var id = parseInt(e.target.closest('tr').dataset.id);
-    UIkit.modal.confirm('Are you sure you want to delete this deck?').then(function() {
-      StorageCTRL.removeDeckById(id);
-      DeckCTRL.removeDeckById(id);
-      UICtrl.removeDeck(id);
-      UICtrl.showAlert('Deck removed', 'uk-alert-success');
-    }, function() {
-      return;
-    });
+    // Set the id to the hidden input field in the rename modal
+    // We need this in the rename deck modal in order to access the deck in the data structure using the id
+    var id = e.target.closest('tr').dataset.id;
+    deleteDeckIdInput.value = id;
   }
 }

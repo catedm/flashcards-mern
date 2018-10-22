@@ -6,7 +6,7 @@ const Deck = mongoose.model('Decks', mongoose.Schema({
     required: true
   },
   cards: Array,
-  date: {
+  dateAdded: {
     type: Date,
     default: Date.now
   }

@@ -1,9 +1,18 @@
 /* this styles the invisible div on top of the disabled add deck button */
-.add-deck-submit-alert {
+.add-deck-submit-alert,
+.rename-deck-submit-alert {
   position: absolute;
   right: 30px;
-  width: 91px;
   height: 40px;
+}
+
+.rename-deck-submit-alert {
+  display: none;
+  width: 119px;
+}
+
+.card-body {
+  border: 1px solid #1e87f0;
 }
 
 .uk-nav li>a {
