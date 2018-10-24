@@ -12,4 +12,13 @@ const Deck = mongoose.model('Decks', mongoose.Schema({
   }
 }));
 
+function generateCardId() {
+  if (this.cards.length === 0) {
+    return 1;
+  } else {
+    return this.cards[this.cards.length - 1].id + 1;
+  }
+}
+
+exports.generateCardId = generateCardId;
 exports.Deck = Deck;

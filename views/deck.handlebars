@@ -9,11 +9,18 @@
 </nav>
 </div>
 <div class="uk-section uk-padding-remove">
-  <h1 class="uk-text-center">{{ currentDeck.title }}</h1>
-  <div class="add-card-form-container uk-container uk-container-small">
+  <div class="uk-container">
+    <h1 class="uk-text-center">{{ currentDeck.title }}</h1>
+    {{#if expressFlash}}
+      <div class="uk-alert-success uk-margin" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>{{ expressFlash }}</p>
+      </div>
+    {{/if}}
+    <div class="add-card-form-container uk-container uk-container-small">
+    </div>
   </div>
 </div>
 <!-- Include the Quill library -->
 <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
-<script src="/quill.js"></script>
 <script src="/add-card.js"></script>

@@ -5,7 +5,9 @@
   right: 30px;
   height: 40px;
 }
-
+.add-deck-submit-alert {
+  width: 91px;
+}
 .rename-deck-submit-alert {
   display: none;
   width: 119px;

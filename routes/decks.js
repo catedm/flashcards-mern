@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Deck } = require('../models/decks')
+const { Deck, generateCardId } = require('../models/decks');
 
 router.get('/', async (req, res, next) => {
   Deck.find(function(e, deck) {
@@ -17,6 +17,7 @@ router.get('/decks/:id', async (req, res, next) => {
   if (!deck) return res.status(404).send('Deck with the given id not found.');
 
   res.render('deck.handlebars', {
+    expressFlash: req.flash('success'),
     currentDeck: deck
   })
 });
@@ -41,6 +42,23 @@ router.delete('/delete-deck', async (req, res, next) => {
 
   req.flash('success', 'Deck removed.');
   res.redirect('/');
+});
+
+router.post('/add-card', async (req, res, next) => {
+  let deck = await Deck.findById(req.body.deckId).catch(err => (err));
+  const boundGenerateCardId = generateCardId.bind(deck);
+
+  const newCard = {
+    front: req.body.frontValue,
+    back: req.body.backValue,
+    id: boundGenerateCardId()
+  }
+
+  deck.cards.push(newCard);
+  deck = await deck.save();
+
+  req.flash('success', 'Card added.');
+  res.redirect(`/decks/${req.body.deckId}`);
 });
 
 module.exports = router;
