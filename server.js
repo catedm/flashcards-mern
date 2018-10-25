@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost/flashcard-app')
 
 // Routes
 const decks = require('./routes/decks');
+const api = require('./routes/api');
 
 const sessionStore = new session.MemoryStore;
 
@@ -48,6 +49,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set routes
 app.use('/', decks);
+app.use('/api/decks', api);
 
 // PORT environment variable
 const port = process.env.PORT || 3030;

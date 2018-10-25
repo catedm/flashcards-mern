@@ -3,7 +3,7 @@
     <ul class="uk-navbar-nav">
       <li><a href="/">Decks</a></li>
       <li><a class="add-card" href="#">Add Card</a></li>
-      <li><a href="#">Browse</a></li>
+      <li><a href="#">All Cards</a></li>
     </ul>
   </div>
 </nav>
@@ -11,6 +11,7 @@
 <div class="uk-section uk-padding-remove">
   <div class="uk-container">
     <h1 class="uk-text-center">{{ currentDeck.title }}</h1>
+    <button class="study-now uk-align-center uk-button uk-button-primary">Study Now</button>
     {{#if expressFlash}}
       <div class="uk-alert-success uk-margin" uk-alert>
         <a class="uk-alert-close" uk-close></a>
@@ -19,8 +20,11 @@
     {{/if}}
     <div class="add-card-form-container uk-container uk-container-small">
     </div>
+    <div class="study-container uk-container uk-container-small uk-margin-bottom">
+    </div>
   </div>
 </div>
 <!-- Include the Quill library -->
 <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
 <script src="/add-card.js"></script>
+<script src="/study.js"></script>
