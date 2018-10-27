@@ -5,10 +5,9 @@ var frontEditorContents;
 var backEditorContents;
 
 document.querySelector('.add-card').addEventListener('click', function(e) {
-  var container = document.querySelector('.add-card-form-container');
+  var container = document.querySelector('.add-card-form');
 
   var template = `
-  <form class="add-card-form" action="/add-card" method="POST">
     <div class="uk-grid-collapse uk-margin-bottom" uk-grid>
       <div class="add-card-form-container uk-width-expand@m">
         <div class="card-body uk-padding">
@@ -33,10 +32,9 @@ document.querySelector('.add-card').addEventListener('click', function(e) {
     <input type="hidden" name="backValue" value="">
     <input type="hidden" name="deckId" value="">
     <p class="uk-text-right">
-      <button class="add-card-cancel uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-      <button class="add-card-submit uk-button uk-button-primary" type="submit">Add Card</button>
+      <button class="add-card-cancel uk-button uk-button-default uk-modal-close" type="button">Close</button>
+      <input class="add-card-submit uk-button uk-button-primary" type="button" value="Submit" onclick="addCard()"/>
     </p>
-  </form>
   `;
 
   container.innerHTML = template;
@@ -84,15 +82,61 @@ document.querySelector('.add-card').addEventListener('click', function(e) {
   e.preventDefault();
 });
 
-document.querySelector('.add-card-form-container').addEventListener('click', function(e) {
+document.querySelector('.add-card-form').addEventListener('click', function(e) {
   if (e.target.classList.contains('add-card-cancel')) {
     this.innerHTML = '';
-  } else if (e.target.classList.contains('add-card-submit')) {
-    document.querySelector("input[name='deckId']").value = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
   }
 });
 
+function addCard() {
+  // get deck Id from url
+  var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+
+  // make card to send to route handler
+  var card = {
+    frontValue: document.querySelector("input[name='frontValue']").value,
+    backValue: document.querySelector("input[name='backValue']").value,
+    deckId: deckId
+  }
+
+  // perform AJAX request
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:3030/add-card", true);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(card));
+
+  // reset form
+  resetAddCardForm();
+
+  // add success message
+  addCardSuccess();
+}
+
+function resetAddCardForm() {
+  frontEditor.setContents([]);
+  backEditor.setContents([]);
+}
+
+function addCardSuccess() {
+  var successDiv = document.createElement('div');
+  successDiv.classList.add('uk-alert-success');
+  successDiv.classList.add('add-card-success');
+  successDiv.classList.add('uk-margin-bottom');
+  successDiv.setAttribute('uk-alert', '');
+  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>Card Added</p>`
+  document.querySelector('.add-card-form-container').insertBefore(successDiv, document.querySelector('.add-card-form'));
+
+  clearSuccess();
+}
+
+function clearSuccess() {
+  setTimeout(function() {
+    document.querySelector('.add-card-success').remove();
+  }, 2000);
+};
+
 function frontUpdate(delta) {
+  // try / catch because the selector is added dynamically
   try {
     document.querySelector("input[name='frontValue']").value = JSON.stringify(frontEditor.getContents());
     return frontEditor.getContents();
@@ -100,6 +144,7 @@ function frontUpdate(delta) {
 }
 
 function backUpdate(delta) {
+  // try / catch because the selector is added dynamically
   try {
     document.querySelector("input[name='backValue']").value = JSON.stringify(backEditor.getContents());
     return backEditor.getContents();

@@ -19,7 +19,6 @@ const api = require('./routes/api');
 
 const sessionStore = new session.MemoryStore;
 
-
 app.use(express.json());
 
 app.use(cookieParser('secret'));

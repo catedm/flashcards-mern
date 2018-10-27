@@ -46,6 +46,7 @@ router.delete('/delete-deck', async (req, res, next) => {
 
 router.post('/add-card', async (req, res, next) => {
   let deck = await Deck.findById(req.body.deckId).catch(err => (err));
+  console.log(deck);
   const boundGenerateCardId = generateCardId.bind(deck);
 
   const newCard = {
@@ -56,9 +57,6 @@ router.post('/add-card', async (req, res, next) => {
 
   deck.cards.push(newCard);
   deck = await deck.save();
-
-  req.flash('success', 'Card added.');
-  res.redirect(`/decks/${req.body.deckId}`);
 });
 
 module.exports = router;
