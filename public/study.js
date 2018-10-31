@@ -5,55 +5,25 @@ fetch(url)
   .then(res => res.json())
   .then(data => cardsArray = data);
 
-var toolbarOptions = [
-  ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-  ['blockquote', 'code-block'],
+  var toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+    ['blockquote', 'code-block'],
 
-  [{
-    'header': 1
-  }, {
-    'header': 2
-  }], // custom button values
-  [{
-    'list': 'ordered'
-  }, {
-    'list': 'bullet'
-  }],
-  [{
-    'script': 'sub'
-  }, {
-    'script': 'super'
-  }], // superscript/subscript
-  [{
-    'indent': '-1'
-  }, {
-    'indent': '+1'
-  }], // outdent/indent
-  [{
-    'direction': 'rtl'
-  }], // text direction
+    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+    [{ 'direction': 'rtl' }],                         // text direction
 
-  [{
-    'size': ['small', false, 'large', 'huge']
-  }], // custom dropdown
-  [{
-    'header': [1, 2, 3, 4, 5, 6, false]
-  }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
-  [{
-    'color': []
-  }, {
-    'background': []
-  }], // dropdown with defaults from theme
-  [{
-    'font': []
-  }],
-  [{
-    'align': []
-  }],
+    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+    [{ 'font': [] }],
+    [{ 'align': [] }],
 
-  ['clean'] // remove formatting button
-];
+    ['clean']                                         // remove formatting button
+  ];
 
 document.querySelector('.study-now').addEventListener('click', function(e) {
   cards = cardIterator(cardsArray);
@@ -79,6 +49,14 @@ document.querySelector('.study-container').addEventListener('click', function(e)
     document.querySelector('.cancel-edit').style.display = 'inline';
     document.querySelector('.card-back').style.display = 'block';
     back.enable(true);
+  } else if (e.target.classList.contains('save-card')) {
+    document.querySelector('.exit-study').style.display = 'inline';
+    document.querySelector('.edit-card').style.display = 'inline';
+    document.querySelector('.show-answer').style.display = 'inline';
+    document.querySelector('.save-card').style.display = 'none';
+    document.querySelector('.cancel-edit').style.display = 'none';
+    document.querySelector('.card-back').style.display = 'none';
+    back.enable(false);
   } else if (e.target.classList.contains('cancel-edit')) {
     document.querySelector('.exit-study').style.display = 'inline';
     document.querySelector('.edit-card').style.display = 'inline';
@@ -122,10 +100,11 @@ function nextCard() {
       <button class="exit-study uk-button uk-button-default">Exit Study</button>
       <button class="edit-card uk-button uk-button-primary">Edit Card</button>
       <button class="cancel-edit uk-button uk-button-default">Cancel</button>
-      <button class="save-card uk-button uk-button-primary">Save Card</button>
+      <button class="save-card uk-button uk-button-primary" onclick="saveCard()">Save Card</button>
       <button class="show-answer uk-button uk-button-primary">Show Answer</button>
       <button class="next-card uk-button uk-button-primary">Next</button>
     </p>
+    <input class="hiddenCardId" type="hidden" value="${currentCard.id}" />
     `;
 
 
@@ -153,6 +132,41 @@ function nextCard() {
   // No more cards
   window.location.reload();
 }
+}
+
+function saveCard() {
+  // get deck Id from url
+  var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+  // get the card id
+  var cardId = parseInt(document.querySelector('.hiddenCardId').value);
+
+  var card = {
+    frontValue: JSON.stringify(front.getContents()),
+    backValue: JSON.stringify(back.getContents()),
+    cardId: cardId,
+    deckId: deckId
+  }
+
+  // perform AJAX request
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", "http://localhost:3030/save-card", true);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(card));
+
+  // add success message
+  saveCardSuccess();
+}
+
+function saveCardSuccess() {
+  var successDiv = document.createElement('div');
+  successDiv.classList.add('uk-alert-success');
+  successDiv.classList.add('add-card-success');
+  successDiv.classList.add('uk-margin-bottom');
+  successDiv.setAttribute('uk-alert', '');
+  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>Card Updated</p>`
+  document.querySelector('.add-card-form-container').insertBefore(successDiv, document.querySelector('.add-card-form'));
+
+  clearSuccess();
 }
 
 // Card Iterator

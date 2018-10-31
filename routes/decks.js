@@ -46,7 +46,8 @@ router.delete('/delete-deck', async (req, res, next) => {
 
 router.post('/add-card', async (req, res, next) => {
   let deck = await Deck.findById(req.body.deckId).catch(err => (err));
-  console.log(deck);
+  // generate card id
+  // must bind execution context
   const boundGenerateCardId = generateCardId.bind(deck);
 
   const newCard = {
@@ -56,6 +57,27 @@ router.post('/add-card', async (req, res, next) => {
   }
 
   deck.cards.push(newCard);
+  deck = await deck.save();
+});
+
+router.put('/save-card', async (req, res, next) => {
+  // grab deck from database
+  let deck = await Deck.findById(req.body.deckId).catch(err => (err));
+
+  // make the new card object
+  const newCard = {
+    front: req.body.frontValue,
+    back: req.body.backValue,
+    id: req.body.cardId
+  }
+
+  // get index of card to update
+  const index = deck.cards.findIndex(card => card.id === newCard.id);
+  // set the new card
+  deck.cards.splice(index, 1, newCard);
+
+  // save the new cards to the database
+  deck = await Deck.findOneAndUpdate({ _id: req.body.deckId }, { $set: { cards: deck.cards } }, { new: true });
   deck = await deck.save();
 });
 
