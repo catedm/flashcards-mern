@@ -1,9 +1,23 @@
 var cards;
 var cardsArray;
-var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
-fetch(url)
-  .then(res => res.json())
-  .then(data => cardsArray = data);
+getCardsFromApi().then(data => cardsArray = data);
+
+async function getCardsFromApi() {
+  var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
+  var response = await fetch(url);
+  var responseData = await response.json();
+  return responseData;
+}
+
+document.addEventListener('keydown', function(e) {
+  try {
+    if (e.which === 13 || e.which === 32) {
+      document.querySelector('.show-answer').style.display = 'none';
+      document.querySelector('.card-back').style.display = 'block';
+      document.querySelector('.next-card').style.display = 'inline';
+    }
+  } catch {};
+});
 
   var toolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -25,14 +39,17 @@ fetch(url)
     ['clean']                                         // remove formatting button
   ];
 
-document.querySelector('.study-now').addEventListener('click', function(e) {
-  cards = cardIterator(cardsArray);
 
-  this.innerText = "Studying...";
-  this.disabled = true;
+document.querySelector('.top-button-container').addEventListener('click', function(e) {
+  if (e.target.classList.contains('study-now')) {
+    cards = cardIterator(cardsArray);
 
-  // Set first card
-  nextCard();
+    document.querySelector('.study-now').innerText = "Studying...";
+    document.querySelector('.study-now').disabled = true;
+
+    // Set first card
+    nextCard();
+  }
 });
 
 document.querySelector('.study-container').addEventListener('click', function(e) {
@@ -164,7 +181,7 @@ function saveCardSuccess() {
   successDiv.classList.add('uk-margin-bottom');
   successDiv.setAttribute('uk-alert', '');
   successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>Card Updated</p>`
-  document.querySelector('.add-card-form-container').insertBefore(successDiv, document.querySelector('.add-card-form'));
+  document.querySelector('.uk-container').insertBefore(successDiv, document.querySelector('.success-container'));
 
   clearSuccess();
 }

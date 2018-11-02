@@ -113,23 +113,23 @@
 //
 // export const UICtrl = new UI();
 
-const addDeckSubmit = document.querySelector('.add-deck-submit');
-const addDeckSubmitAlert = document.querySelector('.add-deck-submit-alert');
-const addDeckCancel = document.querySelector('.add-deck-cancel');
-const addDeckInput = document.querySelector('.add-deck-input');
-const addDeckModalBackground = document.querySelector('#add-deck-modal');
-const addDeckModal = document.querySelector('.add-deck-modal');
-const renameDeckInput = document.querySelector('.rename-deck-input');
-const renameDeckSubmit = document.querySelector('.rename-deck-submit');
-const renameDeckLink = document.querySelector('.rename-deck');
-const renameDeckModal = document.querySelector('.rename-deck-modal');
-const renameDeckIdInput = document.querySelector('.rename-deck-id');
-const renameDeckSubmitAlert = document.querySelector('.rename-deck-submit-alert');
-const deleteDeckIdInput = document.querySelector('.delete-deck-id');
-const deckTableBody = document.querySelector('.deck-table-body');
-const deckTable = document.querySelector('.deck-table');
-const deckSuccessContainer = document.querySelector('.deck-success-container');
-const navBar = document.querySelector('.uk-navbar-container');
+var addDeckSubmit = document.querySelector('.add-deck-submit');
+var addDeckSubmitAlert = document.querySelector('.add-deck-submit-alert');
+var addDeckCancel = document.querySelector('.add-deck-cancel');
+var addDeckInput = document.querySelector('.add-deck-input');
+var addDeckModalBackground = document.querySelector('#add-deck-modal');
+var addDeckModal = document.querySelector('.add-deck-modal');
+var renameDeckInput = document.querySelector('.rename-deck-input');
+var renameDeckSubmit = document.querySelector('.rename-deck-submit');
+var renameDeckLink = document.querySelector('.rename-deck');
+var renameDeckModal = document.querySelector('.rename-deck-modal');
+var renameDeckIdInput = document.querySelector('.rename-deck-id');
+var renameDeckSubmitAlert = document.querySelector('.rename-deck-submit-alert');
+var deleteDeckIdInput = document.querySelector('.delete-deck-id');
+var deckTableBody = document.querySelector('.deck-table-body');
+var deckTable = document.querySelector('.deck-table');
+var deckSuccessContainer = document.querySelector('.deck-success-container');
+var navBar = document.querySelector('.uk-navbar-container');
 
 function showAlert(message, className) {
   var currentAlert = document.querySelector('.uk-alert');

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+var helpers = require('handlebars-helpers')();
 const { Deck, generateCardId } = require('../models/decks');
 
 router.get('/', async (req, res, next) => {

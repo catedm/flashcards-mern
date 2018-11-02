@@ -2,26 +2,35 @@
   <div class="uk-navbar-center">
     <ul class="uk-navbar-nav">
       <li><a href="/">Decks</a></li>
-      <li><a class="add-card" href="#">Add Card</a></li>
+      <li><a class="add-card" href="#modal-center" uk-toggle>Add Card</a></li>
       <li><a href="#">All Cards</a></li>
     </ul>
   </div>
 </nav>
 </div>
+<div id="modal-center" class="uk-flex-top" uk-modal>
+  <div class="add-card-form-container uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <form class="add-card-form">
+    </form>
+  </div>
+</div>
 <div class="uk-section uk-padding-remove">
   <div class="uk-container">
     <h1 class="uk-text-center">{{ currentDeck.title }}</h1>
-    <button class="study-now uk-align-center uk-button uk-button-primary">Study Now</button>
+    <div class="top-button-container">
+      {{#eq currentDeck.cards.length 0}}
+        <button class="add-card uk-align-center uk-button uk-button-primary" href="#modal-center" uk-toggle>Add Card</button>
+        {{else}}
+          <button class="study-now uk-align-center uk-button uk-button-primary">Study Now</button>
+      {{/eq}}
+    </div>
     {{#if expressFlash}}
       <div class="uk-alert-success uk-margin" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <p>{{ expressFlash }}</p>
       </div>
     {{/if}}
-    <div class="add-card-form-container uk-container uk-container-small">
-      <form class="add-card-form">
-      </form>
-    </div>
+    <div class="success-container"></div>
     <div class="study-container uk-container uk-container-small uk-margin-bottom">
     </div>
   </div>

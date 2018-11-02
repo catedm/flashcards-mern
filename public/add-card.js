@@ -4,7 +4,22 @@ var backEditor;
 var frontEditorContents;
 var backEditorContents;
 
+// main menu add card listener
 document.querySelector('.add-card').addEventListener('click', function(e) {
+  addCardTemplate();
+  e.preventDefault();
+});
+
+// IF there are ZERO cards in the deck, add listener for ADD CARD button
+document.querySelector('.top-button-container').addEventListener('click', function(e) {
+  if (e.target.classList.contains('add-card')) {
+    addCardTemplate();
+    e.preventDefault();
+  }
+});
+
+// Template for adding cards
+function addCardTemplate() {
   var container = document.querySelector('.add-card-form');
 
   var template = `
@@ -31,7 +46,7 @@ document.querySelector('.add-card').addEventListener('click', function(e) {
     <input type="hidden" name="frontValue" value="">
     <input type="hidden" name="backValue" value="">
     <input type="hidden" name="deckId" value="">
-    <p class="uk-text-right">
+    <p class="uk-text-right uk-margin-remove-bottom">
       <button class="add-card-cancel uk-button uk-button-default uk-modal-close" type="button">Close</button>
       <input class="add-card-submit uk-button uk-button-primary" type="button" value="Submit" onclick="addCard()"/>
     </p>
@@ -78,17 +93,15 @@ document.querySelector('.add-card').addEventListener('click', function(e) {
 
   frontEditor.on('editor-change', frontUpdate);
   backEditor.on('editor-change', backUpdate);
+}
 
-  e.preventDefault();
-});
+// document.querySelector('.add-card-form').addEventListener('click', function(e) {
+//   if (e.target.classList.contains('add-card-cancel')) {
+//     this.innerHTML = '';
+//   }
+// });
 
-document.querySelector('.add-card-form').addEventListener('click', function(e) {
-  if (e.target.classList.contains('add-card-cancel')) {
-    this.innerHTML = '';
-  }
-});
-
-function addCard() {
+async function addCard() {
   // get deck Id from url
   var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 
@@ -110,6 +123,17 @@ function addCard() {
 
   // add success message
   addCardSuccess();
+
+  // Check to see if this is the first card added by pulling cards from the API
+  var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
+  const response = await fetch(url);
+  const responseData = await response.json();
+
+  // if first card added - reload the page to activate study option
+  if (responseData.length === 1) {
+    window.location.reload();
+  }
+
 }
 
 function resetAddCardForm() {
@@ -123,7 +147,7 @@ function addCardSuccess() {
   successDiv.classList.add('add-card-success');
   successDiv.classList.add('uk-margin-bottom');
   successDiv.setAttribute('uk-alert', '');
-  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>Card Added</p>`
+  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>Card Added</p>`;
   document.querySelector('.add-card-form-container').insertBefore(successDiv, document.querySelector('.add-card-form'));
 
   clearSuccess();
