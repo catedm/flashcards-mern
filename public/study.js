@@ -6,18 +6,28 @@ async function getCardsFromApi() {
   var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
   var response = await fetch(url);
   var responseData = await response.json();
-  return responseData;
+  return shuffle(responseData);
 }
 
-document.addEventListener('keydown', function(e) {
-  try {
-    if (e.which === 13 || e.which === 32) {
-      document.querySelector('.show-answer').style.display = 'none';
-      document.querySelector('.card-back').style.display = 'block';
-      document.querySelector('.next-card').style.display = 'inline';
+function shuffle(array) {
+    let counter = array.length;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        let index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        let temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
     }
-  } catch {};
-});
+
+    return array;
+}
 
   var toolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
