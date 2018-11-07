@@ -1,12 +1,12 @@
-var cards;
-var cardsArray;
-getCardsFromApi().then(data => cardsArray = data);
+// var cards;
+// var cardsArray;
+// getCardsFromApi().then(data => cardsArray = data);
 
 async function getCardsFromApi() {
   var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
   var response = await fetch(url);
   var responseData = await response.json();
-  return shuffle(responseData);
+  return responseData;
 }
 
 function shuffle(array) {
@@ -52,13 +52,16 @@ function shuffle(array) {
 
 document.querySelector('.top-button-container').addEventListener('click', function(e) {
   if (e.target.classList.contains('study-now')) {
-    cards = cardIterator(cardsArray);
+    // get the cards from the database
+    getCardsFromApi().then(cardsArray => {
+      cards = cardIterator(shuffle(cardsArray));
 
-    document.querySelector('.study-now').innerText = "Studying...";
-    document.querySelector('.study-now').disabled = true;
+      document.querySelector('.study-now').innerText = "Studying...";
+      document.querySelector('.study-now').disabled = true;
 
-    // Set first card
-    nextCard();
+      // Set first card
+      nextCard();
+    });
   }
 });
 
@@ -73,6 +76,7 @@ document.querySelector('.study-container').addEventListener('click', function(e)
     document.querySelector('.edit-card').style.display = 'none';
     document.querySelector('.show-answer').style.display = 'none';
     document.querySelector('.save-card').style.display = 'inline';
+    document.querySelector('.delete-card').style.display = 'inline';
     document.querySelector('.cancel-edit').style.display = 'inline';
     document.querySelector('.card-back').style.display = 'block';
     back.enable(true);
@@ -81,6 +85,7 @@ document.querySelector('.study-container').addEventListener('click', function(e)
     document.querySelector('.edit-card').style.display = 'inline';
     document.querySelector('.show-answer').style.display = 'inline';
     document.querySelector('.save-card').style.display = 'none';
+    document.querySelector('.delete-card').style.display = 'none';
     document.querySelector('.cancel-edit').style.display = 'none';
     document.querySelector('.card-back').style.display = 'none';
     back.enable(false);
@@ -91,6 +96,7 @@ document.querySelector('.study-container').addEventListener('click', function(e)
     document.querySelector('.save-card').style.display = 'none';
     document.querySelector('.cancel-edit').style.display = 'none';
     document.querySelector('.card-back').style.display = 'none';
+    document.querySelector('.delete-card').style.display = 'none';
     back.enable(false);
   } else if (e.target.classList.contains('exit-study')) {
     window.location.reload();
@@ -127,6 +133,7 @@ function nextCard() {
       <button class="exit-study uk-button uk-button-default">Exit Study</button>
       <button class="edit-card uk-button uk-button-primary">Edit Card</button>
       <button class="cancel-edit uk-button uk-button-default">Cancel</button>
+      <button class="delete-card uk-button uk-button-danger" onclick="deleteCard()">Delete Card</button>
       <button class="save-card uk-button uk-button-primary" onclick="saveCard()">Save Card</button>
       <button class="show-answer uk-button uk-button-primary">Show Answer</button>
       <button class="next-card uk-button uk-button-primary">Next</button>
@@ -161,6 +168,36 @@ function nextCard() {
 }
 }
 
+function deleteCard() {
+  UIkit.modal.confirm('Are you sure you want to delete this card?').then(function() {
+
+    // get deck Id from url
+    var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+    // get the card id
+    var cardId = parseInt(document.querySelector('.hiddenCardId').value);
+
+    var card = {
+      cardId: cardId,
+      deckId: deckId
+    }
+
+    // perform AJAX request
+    var xhr = new XMLHttpRequest();
+    xhr.open("DELETE", "http://localhost:3030/delete-card", true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send(JSON.stringify(card));
+
+    // refresh div to update card count
+    $("#card-count").load(window.location.href + " #card-count");
+
+    // add success message
+    successMessage("Card deleted.");
+    nextCard();
+  }, function() {
+    console.log('rejected');
+  });
+}
+
 function saveCard() {
   // get deck Id from url
   var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
@@ -181,16 +218,16 @@ function saveCard() {
   xhr.send(JSON.stringify(card));
 
   // add success message
-  saveCardSuccess();
+  successMessage("Card updated.");
 }
 
-function saveCardSuccess() {
+function successMessage(message) {
   var successDiv = document.createElement('div');
   successDiv.classList.add('uk-alert-success');
   successDiv.classList.add('add-card-success');
   successDiv.classList.add('uk-margin-bottom');
   successDiv.setAttribute('uk-alert', '');
-  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>Card Updated</p>`
+  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>${message}</p>`
   document.querySelector('.uk-container').insertBefore(successDiv, document.querySelector('.success-container'));
 
   clearSuccess();

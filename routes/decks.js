@@ -82,4 +82,18 @@ router.put('/save-card', async (req, res, next) => {
   deck = await deck.save();
 });
 
+router.delete('/delete-card', async (req, res, next) => {
+  // grab deck from database
+  let deck = await Deck.findById(req.body.deckId).catch(err => (err));
+
+  // get index of card to delete
+  const index = deck.cards.findIndex(card => card.id === req.body.cardId);
+  // set the new card
+  deck.cards.splice(index, 1);
+
+  // save the new cards to the database
+  deck = await Deck.findOneAndUpdate({ _id: req.body.deckId }, { $set: { cards: deck.cards } }, { new: true });
+  deck = await deck.save();
+});
+
 module.exports = router;

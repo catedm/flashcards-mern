@@ -95,12 +95,6 @@ function addCardTemplate() {
   backEditor.on('editor-change', backUpdate);
 }
 
-// document.querySelector('.add-card-form').addEventListener('click', function(e) {
-//   if (e.target.classList.contains('add-card-cancel')) {
-//     this.innerHTML = '';
-//   }
-// });
-
 async function addCard() {
   // get deck Id from url
   var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
@@ -121,18 +115,17 @@ async function addCard() {
   // reset form
   resetAddCardForm();
 
-  // add success message
-  addCardSuccess();
-
   // Check to see if this is the first card added by pulling cards from the API
   var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
   const response = await fetch(url);
   const responseData = await response.json();
 
-  // if first card added - reload the page to activate study option
-  if (responseData.length === 1) {
-    window.location.reload();
-  }
+  // refresh div to update card count
+  $("#card-count").load(window.location.href + " #card-count");
+  $(".top-button-container").load(window.location.href + " .top-button-container");
+
+  // add success message
+  addCardSuccess();
 
 }
 

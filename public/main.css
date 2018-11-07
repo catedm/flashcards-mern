@@ -18,9 +18,18 @@
 .card-back,
 .next-card,
 .save-card,
-.cancel-edit {
+.cancel-edit,
+.delete-card {
   display: none;
 }
+
+.card-row:nth-of-type(odd):hover,
+.card-row:hover {
+  cursor: pointer;
+  color: #fff;
+  background: #47617b;
+}
+
 .uk-nav li>a {
   display: inline-block;
 }
