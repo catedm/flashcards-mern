@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const app = express();
 
+
 mongoose.connect('mongodb://localhost/flashcard-app')
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.log('Could not connect to MongoDB.', err));

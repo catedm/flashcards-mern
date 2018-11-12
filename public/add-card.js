@@ -95,7 +95,7 @@ function addCardTemplate() {
   backEditor.on('editor-change', backUpdate);
 }
 
-async function addCard() {
+function addCard() {
   // get deck Id from url
   var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 
@@ -106,27 +106,28 @@ async function addCard() {
     deckId: deckId
   }
 
-  // perform AJAX request
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:3030/add-card", true);
-  xhr.setRequestHeader("Content-type", "application/json");
-  xhr.send(JSON.stringify(card));
+  // send XHR request to database
+  sendXHRRequest(card);
 
   // reset form
   resetAddCardForm();
 
-  // Check to see if this is the first card added by pulling cards from the API
-  var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
-  const response = await fetch(url);
-  const responseData = await response.json();
-
   // refresh div to update card count
   $("#card-count").load(window.location.href + " #card-count");
+  // reload button text
   $(".top-button-container").load(window.location.href + " .top-button-container");
 
   // add success message
   addCardSuccess();
 
+}
+
+function sendXHRRequest(card) {
+  // perform AJAX request
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:3030/add-card", true);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(card));
 }
 
 function resetAddCardForm() {

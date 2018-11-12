@@ -15,19 +15,40 @@
 .card-body {
   border: 1px solid #1e87f0;
 }
+
+svg {
+  pointer-events: none;
+}
+
 .card-back,
 .next-card,
 .save-card,
 .cancel-edit,
-.delete-card {
+.delete-card-first,
+.are-you-sure,
+.yes-delete,
+.no-delete,
+.are-you-sure-all-cards,
+.yes-delete-all-cards,
+.no-delete-all-cards
+ {
   display: none;
 }
 
 .card-row:nth-of-type(odd):hover,
 .card-row:hover {
   cursor: pointer;
+}
+
+span.hl {
+  background: #0f7ae5;
   color: #fff;
-  background: #47617b;
+}
+
+h4.browse-cards-title {
+  color: #fff;
+  margin: 0;
+  text-align: center;
 }
 
 .uk-nav li>a {

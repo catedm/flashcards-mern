@@ -1,8 +1,8 @@
-// var cards;
-// var cardsArray;
-// getCardsFromApi().then(data => cardsArray = data);
+// initialize front editor and back editor variables in global scope
+var frontEditor;
+var backEditor;
 
-async function getCardsFromApi() {
+async function getCards() {
   var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
   var response = await fetch(url);
   var responseData = await response.json();
@@ -53,7 +53,7 @@ function shuffle(array) {
 document.querySelector('.top-button-container').addEventListener('click', function(e) {
   if (e.target.classList.contains('study-now')) {
     // get the cards from the database
-    getCardsFromApi().then(cardsArray => {
+    getCards().then(cardsArray => {
       cards = cardIterator(shuffle(cardsArray));
 
       document.querySelector('.study-now').innerText = "Studying...";
@@ -76,19 +76,19 @@ document.querySelector('.study-container').addEventListener('click', function(e)
     document.querySelector('.edit-card').style.display = 'none';
     document.querySelector('.show-answer').style.display = 'none';
     document.querySelector('.save-card').style.display = 'inline';
-    document.querySelector('.delete-card').style.display = 'inline';
+    document.querySelector('.delete-card-first').style.display = 'inline';
     document.querySelector('.cancel-edit').style.display = 'inline';
     document.querySelector('.card-back').style.display = 'block';
-    back.enable(true);
+    backEditor.enable(true);
   } else if (e.target.classList.contains('save-card')) {
     document.querySelector('.exit-study').style.display = 'inline';
     document.querySelector('.edit-card').style.display = 'inline';
     document.querySelector('.show-answer').style.display = 'inline';
     document.querySelector('.save-card').style.display = 'none';
-    document.querySelector('.delete-card').style.display = 'none';
+    document.querySelector('.delete-card-first').style.display = 'none';
     document.querySelector('.cancel-edit').style.display = 'none';
     document.querySelector('.card-back').style.display = 'none';
-    back.enable(false);
+    backEditor.enable(false);
   } else if (e.target.classList.contains('cancel-edit')) {
     document.querySelector('.exit-study').style.display = 'inline';
     document.querySelector('.edit-card').style.display = 'inline';
@@ -96,10 +96,27 @@ document.querySelector('.study-container').addEventListener('click', function(e)
     document.querySelector('.save-card').style.display = 'none';
     document.querySelector('.cancel-edit').style.display = 'none';
     document.querySelector('.card-back').style.display = 'none';
-    document.querySelector('.delete-card').style.display = 'none';
-    back.enable(false);
+    document.querySelector('.delete-card-first').style.display = 'none';
+    document.querySelector('.are-you-sure').style.display = 'none';
+    backEditor.enable(false);
   } else if (e.target.classList.contains('exit-study')) {
-    window.location.reload();
+    this.innerHTML = '';
+    document.querySelector('.study-now').innerText = "Study Now";
+    document.querySelector('.study-now').disabled = false;
+  } else if (e.target.classList.contains('delete-card-first')) {
+    document.querySelector('.delete-card-first').style.display = 'none';
+    document.querySelector('.save-card').style.display = 'none';
+    document.querySelector('.cancel-edit').style.display = 'none';
+    document.querySelector('.are-you-sure').style.display = 'inline';
+    document.querySelector('.yes-delete').style.display = 'inline';
+    document.querySelector('.no-delete').style.display = 'inline';
+  } else if (e.target.classList.contains('no-delete') || e.target.classList.contains('do-not-delete-icon')) {
+    document.querySelector('.yes-delete').style.display = 'none';
+    document.querySelector('.no-delete').style.display = 'none';
+    document.querySelector('.are-you-sure').style.display = 'none';
+    document.querySelector('.delete-card-first').style.display = 'inline';
+    document.querySelector('.save-card').style.display = 'inline';
+    document.querySelector('.cancel-edit').style.display = 'inline';
   } else if (e.target.classList.contains('next-card')) {
     nextCard();
   }
@@ -133,16 +150,19 @@ function nextCard() {
       <button class="exit-study uk-button uk-button-default">Exit Study</button>
       <button class="edit-card uk-button uk-button-primary">Edit Card</button>
       <button class="cancel-edit uk-button uk-button-default">Cancel</button>
-      <button class="delete-card uk-button uk-button-danger" onclick="deleteCard()">Delete Card</button>
+      <button class="delete-card-first uk-button uk-button-danger">Delete Card</button>
+      <span class="are-you-sure uk-margin-right">Are you sure?</span>
+      <button class="yes-delete uk-button uk-button-danger" onclick="deleteCard()">Yes<span class="delete-icon" uk-icon="icon: check" style="margin-left: 8px;"></span></button>
+      <button class="no-delete uk-button uk-button-secondary">No<span class="do-not-delete-icon" uk-icon="icon: close" style="margin-left: 8px;"></span></button>
       <button class="save-card uk-button uk-button-primary" onclick="saveCard()">Save Card</button>
       <button class="show-answer uk-button uk-button-primary">Show Answer</button>
       <button class="next-card uk-button uk-button-primary">Next</button>
     </p>
+    <p class="uk-text-right">
     <input class="hiddenCardId" type="hidden" value="${currentCard.id}" />
     `;
 
-
-    front = new Quill('#front', {
+    frontEditor = new Quill('#front', {
       modules: {
         syntax: true,
         toolbar: toolbarOptions
@@ -150,7 +170,7 @@ function nextCard() {
       theme: 'snow'
     });
 
-    back = new Quill('#back', {
+    backEditor = new Quill('#back', {
       modules: {
         syntax: true,
         toolbar: toolbarOptions
@@ -158,18 +178,20 @@ function nextCard() {
       theme: 'snow'
     });
 
-  front.setContents(JSON.parse(currentCard.front));
-  back.setContents(JSON.parse(currentCard.back));
-  back.enable(false);
+  frontEditor.setContents(JSON.parse(currentCard.front));
+  backEditor.setContents(JSON.parse(currentCard.back));
+  backEditor.enable(false);
 
 } else {
   // No more cards
-  window.location.reload();
+  document.querySelector('.study-container').innerHTML = '';
+  document.querySelector('.study-now').innerText = "Study Now";
+  document.querySelector('.study-now').disabled = false;
+  successMessage("You finished this deck!");
 }
 }
 
 function deleteCard() {
-  UIkit.modal.confirm('Are you sure you want to delete this card?').then(function() {
 
     // get deck Id from url
     var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
@@ -192,10 +214,20 @@ function deleteCard() {
 
     // add success message
     successMessage("Card deleted.");
-    nextCard();
-  }, function() {
-    console.log('rejected');
-  });
+
+    getCards().then(cardsArray => {
+      if (cardsArray.length === 0) {
+        // refresh div to update card count
+        $("#card-count").load(window.location.href + " #card-count");
+        // reload button text
+        $(".top-button-container").load(window.location.href + " .top-button-container");
+        // reset study container
+        document.querySelector('.study-container').innerHTML = '';
+      } else {
+        nextCard();
+      }
+    });
+
 }
 
 function saveCard() {
@@ -205,8 +237,8 @@ function saveCard() {
   var cardId = parseInt(document.querySelector('.hiddenCardId').value);
 
   var card = {
-    frontValue: JSON.stringify(front.getContents()),
-    backValue: JSON.stringify(back.getContents()),
+    frontValue: JSON.stringify(frontEditor.getContents()),
+    backValue: JSON.stringify(backEditor.getContents()),
     cardId: cardId,
     deckId: deckId
   }

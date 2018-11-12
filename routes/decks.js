@@ -59,6 +59,7 @@ router.post('/add-card', async (req, res, next) => {
 
   deck.cards.push(newCard);
   deck = await deck.save();
+  res.send(deck);
 });
 
 router.put('/save-card', async (req, res, next) => {
@@ -80,6 +81,7 @@ router.put('/save-card', async (req, res, next) => {
   // save the new cards to the database
   deck = await Deck.findOneAndUpdate({ _id: req.body.deckId }, { $set: { cards: deck.cards } }, { new: true });
   deck = await deck.save();
+  res.send(deck);
 });
 
 router.delete('/delete-card', async (req, res, next) => {
@@ -94,6 +96,7 @@ router.delete('/delete-card', async (req, res, next) => {
   // save the new cards to the database
   deck = await Deck.findOneAndUpdate({ _id: req.body.deckId }, { $set: { cards: deck.cards } }, { new: true });
   deck = await deck.save();
+  res.send(deck);
 });
 
 module.exports = router;

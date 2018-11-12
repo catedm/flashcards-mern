@@ -29,18 +29,18 @@
         <input class="rename-deck-input uk-input" type="text" placeholder="Name" name="newTitle">
         <input class="rename-deck-id" type="hidden" name="deckId">
       </div>
-      <div class="rename-deck-submit-alert"></div>
+        <div class="rename-deck-submit-alert"></div>
         <p class="uk-text-right">
           <button class="uk-button uk-button-default uk-modal-close" type="button">Nevermind</button>
           <button class="rename-deck-submit uk-button uk-button-primary" type="submit">Rename</button>
         </p>
         <input type="hidden" name="_method" value="put">
     </form>
+      </div>
   </div>
-</div>
-<div class="delete-deck-modal" id="delete-deck-modal" uk-modal="">
-  <div class="uk-modal-dialog uk-modal-body">
-    <form class="delete-deck-form" action="/delete-deck?_method=DELETE" method="POST">
+  <div class="delete-deck-modal" id="delete-deck-modal" uk-modal="">
+    <div class="uk-modal-dialog uk-modal-body">
+      <form class="delete-deck-form" action="/delete-deck?_method=DELETE" method="POST">
         <p>Are you sure you want to delete this deck?</p>
         <input class="delete-deck-id" type="hidden" name="deckId">
         <input type="hidden" name="_method" value="delete">
@@ -48,45 +48,45 @@
           <button class="uk-button uk-button-default uk-modal-close" type="button">No</button>
           <button class="rename-deck-submit uk-button uk-button-primary" type="submit">Yes</button>
         </p>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
-<div class="uk-section uk-padding-small">
-  <div class="uk-container">
-    {{#if expressFlash}}
-      <div class="uk-alert-success uk-margin" uk-alert>
-        <a class="uk-alert-close" uk-close></a>
-        <p>{{ expressFlash }}</p>
-      </div>
-    {{/if}}
-    <table class="deck-table uk-table uk-table-hover uk-table-divider">
-      <thead>
-        <tr>
-          <th>Decks</th>
-          <th>Cards</th>
-          <th>Options</th>
-        </tr>
-      </thead>
-      <tbody class="deck-table-body uk-table-middle">
-        {{#each decks}}
-          <tr class="deck-row-{{this._id}}" data-id="{{this._id}}">
-            <td class="deck-title-{{this._id}}"><a href="/decks/{{this._id}}">{{this.title}}</a></td>
-            <td>{{this.cards.length}}</td>
-            <td>
-              <div class="uk-inline">
-                <button class="uk-button uk-button-default" type="button"><span uk-icon="cog"></span></button>
-                <div uk-dropdown="pos: bottom-justify; mode: click" class="uk-padding-small">
-                  <ul class="uk-nav uk-dropdown-nav">
-                    <li><span class="uk-margin-small-right" uk-icon="icon: pencil"></span><a href="#rename-deck-modal" class="rename-deck" uk-toggle>Rename</a></li>
-                    <li><span class="uk-margin-small-right" uk-icon="icon: trash"></span><a href="#delete-deck-modal" class="delete-deck" uk-toggle>Delete</a></li>
-                  </ul>
-                </div>
-              </div>
-            </td>
+  <div class="uk-section uk-padding-small">
+    <div class="uk-container">
+      {{#if expressFlash}}
+        <div class="uk-alert-success uk-margin" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p>{{ expressFlash }}</p>
+        </div>
+      {{/if}}
+      <table class="deck-table uk-table uk-table-hover uk-table-divider">
+        <thead>
+          <tr>
+            <th>Decks</th>
+            <th>Cards</th>
+            <th>Options</th>
           </tr>
-        {{/each}}
-      </tbody>
-    </table>
+        </thead>
+        <tbody class="deck-table-body uk-table-middle">
+          {{#each decks}}
+            <tr class="deck-row-{{this._id}}" data-id="{{this._id}}">
+              <td class="deck-title-{{this._id}}"><a href="/decks/{{this._id}}">{{this.title}}</a></td>
+              <td>{{this.cards.length}}</td>
+              <td>
+                <div class="uk-inline">
+                  <button class="uk-button uk-button-default" type="button"><span uk-icon="cog"></span></button>
+                  <div uk-dropdown="pos: bottom-justify; mode: click" class="uk-padding-small">
+                    <ul class="uk-nav uk-dropdown-nav">
+                      <li><span class="uk-margin-small-right" uk-icon="icon: pencil"></span><a href="#rename-deck-modal" class="rename-deck" uk-toggle>Rename</a></li>
+                      <li><span class="uk-margin-small-right" uk-icon="icon: trash"></span><a href="#delete-deck-modal" class="delete-deck" uk-toggle>Delete</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-<script src="/ui.js"></script>
+  <script src="/ui.js"></script>

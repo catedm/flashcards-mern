@@ -3,21 +3,26 @@
     <ul class="uk-navbar-nav">
       <li><a href="/">Decks</a></li>
       <li><a class="add-card" href="#add-card" uk-toggle>Add Card</a></li>
-      <li><a class="browse-cards" href="#all-cards" uk-toggle>All Cards</a></li>
+      <li><a class="all-cards" href="#all-cards" uk-toggle>All Cards</a></li>
     </ul>
   </div>
 </nav>
 </div>
 <div id="all-cards" class="uk-flex-top uk-modal-container" uk-modal>
-  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-    <button class="uk-modal-close-default" type="button" uk-close></button>
-    <div class="uk-grid-small uk-child-width-expand@s" uk-grid>
-      <div>
-        <div class="all-cards-table-container" style="height: 1000px; overflow: scroll;">
-          <table class="uk-table uk-table-striped">
+  <div class="uk-modal-dialog uk-modal-body uk-padding-remove">
+    <div class="uk-padding-small" style="background: linear-gradient(to left, #28a5f5, #1e87f0);">
+      <h4 class="browse-cards-title">Browse Cards in {{ currentDeck.title }}</h4>
+      <!-- <button class="all-cards-exit uk-modal-close-default" type="button" uk-close></button> -->
+    </div>
+    <div class="uk-grid-small uk-child-width-expand@s uk-padding" uk-grid>
+      <div class="uk-width-1-1">
+        <input type="text" class="search-cards uk-input uk-margin-bottom" name="" value="" placeholder="search cards by front or back value">
+        <div class="all-cards-table-container" style="height: 300px; overflow: scroll;">
+          <table class="uk-table uk-table-striped uk-table-hover">
             <thead>
               <tr>
                 <th>Front</th>
+                <th>Back</th>
                 <th>ID</th>
               </tr>
             </thead>
@@ -27,6 +32,8 @@
         </div>
       </div>
       <div>
+        <div class="browse-success-message">
+        </div>
         <div class="all-cards-edit-card-container">
         </div>
       </div>
