@@ -1,0 +1,7 @@
+bugs:
+  - top button container / card count reloads after additions / deletions still buggy
+  
+todo:
+  - validate front and back input when adding cards
+  - validate all input using Joi
+  - escape HTML

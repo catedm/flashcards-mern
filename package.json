@@ -11,14 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.3",
     "express": "4.16.4",
     "express-handlebars": "^3.0.0",
-    "express-session": "^1.15.6",
     "handlebars-helpers": "^0.10.0",
     "joi": "^13.7.0",
-    "method-override": "^3.0.0",
     "mongo-db": "^1.0.2",
     "mongoose": "^5.3.2"
   },

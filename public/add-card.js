@@ -113,9 +113,9 @@ function addCard() {
   resetAddCardForm();
 
   // refresh div to update card count
-  $("#card-count").load(window.location.href + " #card-count");
+  $(".card-count-container").load(window.location.href + " #card-count");
   // reload button text
-  $(".top-button-container").load(window.location.href + " .top-button-container");
+  $(".top-button-container").load(window.location.href + " .study-now");
 
   // add success message
   addCardSuccess();
@@ -123,7 +123,7 @@ function addCard() {
 }
 
 function sendXHRRequest(card) {
-  // perform AJAX request
+  // perform XHR request
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "http://localhost:3030/add-card", true);
   xhr.setRequestHeader("Content-type", "application/json");

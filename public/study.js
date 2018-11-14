@@ -1,6 +1,8 @@
 // initialize front editor and back editor variables in global scope
 var frontEditor;
 var backEditor;
+// this variable represents the deck while someone is studying
+var currectDeck;
 
 async function getCards() {
   var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
@@ -54,7 +56,7 @@ document.querySelector('.top-button-container').addEventListener('click', functi
   if (e.target.classList.contains('study-now')) {
     // get the cards from the database
     getCards().then(cardsArray => {
-      cards = cardIterator(shuffle(cardsArray));
+      currectDeck = cardIterator(shuffle(cardsArray));
 
       document.querySelector('.study-now').innerText = "Studying...";
       document.querySelector('.study-now').disabled = true;
@@ -124,7 +126,7 @@ document.querySelector('.study-container').addEventListener('click', function(e)
 
 
 function nextCard() {
-  const currentCard = cards.next().value;
+  const currentCard = currectDeck.next().value;
 
   if (currentCard !== undefined) {
     document.querySelector('.study-container').innerHTML = `
@@ -209,21 +211,20 @@ function deleteCard() {
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(card));
 
-    // refresh div to update card count
-    $("#card-count").load(window.location.href + " #card-count");
-
-    // add success message
-    successMessage("Card deleted.");
 
     getCards().then(cardsArray => {
       if (cardsArray.length === 0) {
         // refresh div to update card count
-        $("#card-count").load(window.location.href + " #card-count");
+        $("#card-count").load(window.location.href + " .card-count-container");
         // reload button text
-        $(".top-button-container").load(window.location.href + " .top-button-container");
+        $(".top-button-container").load(window.location.href + " .study-now");
         // reset study container
         document.querySelector('.study-container').innerHTML = '';
       } else {
+        // refresh div to update card count
+        $(".card-count-container").load(window.location.href + " #card-count");
+        // add success message
+        successMessage("Card deleted.");
         nextCard();
       }
     });
@@ -266,13 +267,13 @@ function successMessage(message) {
 }
 
 // Card Iterator
-function cardIterator(cards) {
+function cardIterator(currectDeck) {
   let nextIndex = 0;
 
   return {
     next: function() {
-      return nextIndex < cards.length ? {
-        value: cards[nextIndex++],
+      return nextIndex < currectDeck.length ? {
+        value: currectDeck[nextIndex++],
         done: false
       } : {
         done: true

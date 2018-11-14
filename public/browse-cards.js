@@ -19,12 +19,20 @@ async function getCards() {
 
 // populate the all cards modal table with the cards in the current deck
 allCardsMenuLink.addEventListener('click', function() {
-  var html = ``;
+  buildAllCardsBrowseTable();
+});
 
+// function for dynamically building the all cards browse table
+function buildAllCardsBrowseTable() {
+  // declare html var
+  var html = ``;
+  // get cards from API endpoint
   getCards().then(cardsArray => {
     cardsArray.forEach(function(card) {
+      // get clean strings for front and back card values
       var cleanFrontString = JSON.parse(card.front).ops[0].insert.trim();
       var cleanBackString = JSON.parse(card.back).ops[0].insert.trim();
+      // add table rows to the html output
       html += `
       <tr class="card-row card-${card.id}">
         <td class="uk-text-truncate">${cleanFrontString}</td>
@@ -32,10 +40,10 @@ allCardsMenuLink.addEventListener('click', function() {
         <td>${card.id}</td>
       </tr>`;
     })
-
+    // add the html to the table
     allCardsTable.innerHTML = html;
-  })
-});
+  });
+}
 
 // clear card filter input and edit cards contents on modal close
 on($('#all-cards'), 'hide', () => {
@@ -169,9 +177,9 @@ function deleteCardFromAllCardsBrowse() {
     xhr.send(JSON.stringify(card));
 
     // refresh div to update card count
-    $("#card-count").load(window.location.href + " #card-count");
+    $("#card-count").load(window.location.href + " .card-count-container");
     // reload button text
-    $(".top-button-container").load(window.location.href + " .top-button-container");
+    $(".top-button-container").load(window.location.href + " .study-now");
     // remove row with card in it from table
     removeRow(cardId);
     // remove front and back of card
@@ -193,7 +201,7 @@ function saveChanges() {
   var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
   // get the card id
   var cardId = parseInt(document.querySelector('[name=cardId]').value);
-
+  // build card object to send to the database
   var card = {
     frontValue: JSON.stringify(frontEditor.getContents()),
     backValue: JSON.stringify(backEditor.getContents()),
@@ -206,6 +214,9 @@ function saveChanges() {
   xhr.open("PUT", "http://localhost:3030/save-card", true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify(card));
+
+  // rebuild table to reflect new value
+  buildAllCardsBrowseTable();
 
   // add success message
   browseCardsSuccess("Card updated.");
@@ -235,6 +246,11 @@ function clearSuccess() {
 var cards = [];
 // get cards from api endpoint
 getCards().then(data => cards = data);
+
+document.querySelector('.search-cards').addEventListener('click', function(e) {
+  // get cards from api endpoint
+  getCards().then(data => cards = data);
+});
 
 // find matches during filter
 function findMatches(wordToMatch, cards) {

@@ -41,8 +41,8 @@ svg {
 }
 
 span.hl {
-  background: #0f7ae5;
-  color: #fff;
+  font-weight: bolder;
+  color: #0f7ae5;
 }
 
 h4.browse-cards-title {

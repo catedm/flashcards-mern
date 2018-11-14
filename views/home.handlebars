@@ -9,21 +9,18 @@
 <div class="add-deck-modal" id="add-deck-modal" uk-modal>
   <div class="uk-modal-dialog uk-modal-body">
     <h2 class="uk-modal-title">Add Deck</h2>
-    <form class="add-deck-form" action="/add-deck" method="POST">
       <div class="uk-margin">
         <input class="add-deck-input uk-input" type="text" name="title" placeholder="Name">
         </div>
         <div class="add-deck-submit-alert"></div>
         <p class="uk-text-right">
           <button class="add-deck-cancel uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-          <button class="add-deck-submit uk-button uk-button-primary" type="submit" disabled>Add</button>
+          <button class="add-deck-submit uk-button uk-button-primary" type="submit" onClick="addDeck()" disabled>Add</button>
         </p>
-    </form>
   </div>
 </div>
-<div class="rename-deck-modal" id="rename-deck-modal" uk-modal="">
+<div class="rename-deck-modal" id="rename-deck-modal" uk-modal>
   <div class="uk-modal-dialog uk-modal-body">
-    <form class="add-deck-form" action="/rename-deck?_method=PUT" method="POST">
       <h2 class="uk-modal-title">Rename Deck</h2>
       <div class="uk-margin">
         <input class="rename-deck-input uk-input" type="text" placeholder="Name" name="newTitle">
@@ -32,33 +29,24 @@
         <div class="rename-deck-submit-alert"></div>
         <p class="uk-text-right">
           <button class="uk-button uk-button-default uk-modal-close" type="button">Nevermind</button>
-          <button class="rename-deck-submit uk-button uk-button-primary" type="submit">Rename</button>
+          <button class="rename-deck-submit uk-button uk-button-primary" type="submit" onClick="renameDeck()">Rename</button>
         </p>
-        <input type="hidden" name="_method" value="put">
-    </form>
       </div>
   </div>
-  <div class="delete-deck-modal" id="delete-deck-modal" uk-modal="">
+  <div class="delete-deck-modal" id="delete-deck-modal" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
-      <form class="delete-deck-form" action="/delete-deck?_method=DELETE" method="POST">
         <p>Are you sure you want to delete this deck?</p>
         <input class="delete-deck-id" type="hidden" name="deckId">
-        <input type="hidden" name="_method" value="delete">
         <p class="uk-text-right">
           <button class="uk-button uk-button-default uk-modal-close" type="button">No</button>
-          <button class="rename-deck-submit uk-button uk-button-primary" type="submit">Yes</button>
+          <button class="delete-deck-submit uk-button uk-button-primary" type="submit" onClick="deleteDeck()">Yes</button>
         </p>
-      </form>
     </div>
   </div>
-  <div class="uk-section uk-padding-small">
-    <div class="uk-container">
-      {{#if expressFlash}}
-        <div class="uk-alert-success uk-margin" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p>{{ expressFlash }}</p>
-        </div>
-      {{/if}}
+  <div class="flash-container uk-container">
+  </div>
+  <div class="table-wrapper-outer uk-section uk-padding-small">
+    <div class="table-wrapper-inner uk-container">
       <table class="deck-table uk-table uk-table-hover uk-table-divider">
         <thead>
           <tr>
@@ -89,4 +77,4 @@
       </table>
     </div>
   </div>
-  <script src="/ui.js"></script>
+  <script src="/home.js"></script>

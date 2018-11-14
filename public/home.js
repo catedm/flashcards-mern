@@ -15,7 +15,65 @@ var deckTableBody = document.querySelector('.deck-table-body');
 var deckTable = document.querySelector('.deck-table');
 var deckSuccessContainer = document.querySelector('.deck-success-container');
 var navBar = document.querySelector('.uk-navbar-container');
+var flashContainer = document.querySelector('.flash-container');
 var { on } = UIkit.util;
+
+// add deck to database
+function addDeck() {
+  // build deck object to send to server
+  var newDeck = {
+    deckTitle: addDeckInput.value
+  };
+  // send request to server
+  sendXHRRequest('POST', 'add-deck', newDeck);
+  // show success messsage
+  showAlert('Deck added.', 'uk-alert-success');
+  // remove modal
+  UIkit.modal("#add-deck-modal").hide();
+  // reload deck table, update DOM
+  $(".table-wrapper-outer").load(window.location.href + " .table-wrapper-inner");
+}
+
+// delete deck
+function deleteDeck() {
+  // build deck object to send to server
+  var deck = {
+    deckId: deleteDeckIdInput.value
+  };
+  // send request to server
+  sendXHRRequest('DELETE', 'delete-deck', deck);
+  // show success messsage
+  showAlert('Deck deleted.', 'uk-alert-success');
+  // remove modal
+  UIkit.modal("#delete-deck-modal").hide();
+  // reload deck table, update DOM
+  $(".table-wrapper-outer").load(window.location.href + " .table-wrapper-inner");
+}
+
+// rename deck
+function renameDeck() {
+  // build deck object to send to server
+  var deck = {
+    newTitle: renameDeckInput.value,
+    deckId: renameDeckIdInput.value
+  };
+  // send request to server
+  sendXHRRequest('PUT', 'rename-deck', deck);
+  // show success messsage
+  showAlert('Deck renamed.', 'uk-alert-success');
+  // remove modal
+  UIkit.modal("#rename-deck-modal").hide();
+  // reload deck table, update DOM
+  $(".table-wrapper-outer").load(window.location.href + " .table-wrapper-inner");
+}
+
+function sendXHRRequest(method, url, object) {
+  // perform XHR request
+  var xhr = new XMLHttpRequest();
+  xhr.open(`${method}`, `http://localhost:3030/${url}`, true);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(object));
+}
 
 function showAlert(message, className) {
   var currentAlert = document.querySelector('.uk-alert');
@@ -38,13 +96,14 @@ function showAlert(message, className) {
   alertTemplateContainer.innerHTML = alertTemplate;
   // Add div to DOM
   if (className.includes('primary')) {
+    // check if is the add deck module OR the rename deck module
     if (message.includes('enter')) {
       addDeckInput.parentElement.append(alertTemplateContainer);
     } else if (message.includes('rename')) {
       renameDeckInput.parentElement.append(alertTemplateContainer);
     }
   } if (className.includes('success')) {
-    deckTable.insertAdjacentElement('beforebegin', alertTemplateContainer);
+    flashContainer.appendChild(alertTemplateContainer);
   }
 
   // Timeout
@@ -75,7 +134,7 @@ renameDeckInput.addEventListener('keyup', function(e) {
 // clear add deck input on modal close
 on($('#add-deck-modal'), 'hide', () => {
   addDeckInput.value = '';
-  toggleSubmitButtonState(true);
+  toggleAddDeckSubmitButtonState(true);
 });
 
 function toggleAddDeckSubmitButtonState(disabledValue) {
@@ -96,7 +155,11 @@ renameDeckSubmitAlert.addEventListener('click', function(e) {
   showAlert('Please rename your deck.', 'uk-alert-primary');
 });
 
-deckTableBody.addEventListener('click', deckOptionsLinkClick);
+// must use jquery to attach event lisener to the deck table now, and in the future
+// the deck table gets rebuilt via XMLHttpRequest everytime a deck is renamed, added or deleted
+$('.table-wrapper-outer').on('click', '.deck-table' , {} ,function(e){
+ deckOptionsLinkClick(e);
+});
 
 function deckOptionsLinkClick(e) {
   // this guard clause prevents an error when clicking on the SVG icon

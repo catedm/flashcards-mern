@@ -2,10 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const exphbs  = require('express-handlebars');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const flash = require('connect-flash');
-const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const app = express();
 
@@ -18,19 +14,8 @@ mongoose.connect('mongodb://localhost/flashcard-app')
 const decks = require('./routes/decks');
 const api = require('./routes/api');
 
-const sessionStore = new session.MemoryStore;
 
 app.use(express.json());
-
-app.use(cookieParser('secret'));
-app.use(session({
-  secret: 'secret',
-  store: sessionStore,
-  resave: 'true',
-  saveUninitialized: true,
-  cookie: { maxAge: 60000 }}
-));
-app.use(flash());
 
 // Set view root and view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -38,10 +23,7 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('views engine', 'handlebars');
 
 // Set public assets to be served
-app.use(express.static('public'))
-
-// enable put and delete requests from forms
-app.use(methodOverride('_method'));
+app.use(express.static('public'));
 // for parsing application/json
 app.use(bodyParser.json());
 // for parsing application/xwww-
