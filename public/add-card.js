@@ -3,6 +3,7 @@ var frontEditor;
 var backEditor;
 var frontEditorContents;
 var backEditorContents;
+var { on } = UIkit.util;
 
 // main menu add card listener
 document.querySelector('.add-card').addEventListener('click', function(e) {
@@ -10,16 +11,37 @@ document.querySelector('.add-card').addEventListener('click', function(e) {
   e.preventDefault();
 });
 
-// IF there are ZERO cards in the deck, add listener for ADD CARD button
-document.querySelector('.top-button-container').addEventListener('click', function(e) {
-  if (e.target.classList.contains('add-card')) {
-    addCardTemplate();
-    e.preventDefault();
-  }
+on($('#add-card'), 'hide', () => {
+  setTimeout(() => {
+    clearAddCardModalContents();
+  }, 500)
 });
 
+function clearAddCardModalContents() {
+  document.querySelector('.add-card-form').innerHTML = '';
+}
+
+// Try catch block here because this script is on pages that do not have the .top-button-container-outer element
+// such as the deck settings page
+try {
+  // IF there are ZERO cards in the deck, add listener for ADD CARD button
+  document.querySelector('.top-button-container-outer').addEventListener('click', function(e) {
+    if (e.target.classList.contains('add-card')) {
+      addCardTemplate();
+      e.preventDefault();
+    }
+  });
+} catch (err) {}
+
+async function getDeckSettings() {
+  var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/settings`;
+  var response = await fetch(url);
+  var responseData = await response.json();
+  return responseData;
+}
+
 // Template for adding cards
-function addCardTemplate() {
+async function addCardTemplate() {
   var container = document.querySelector('.add-card-form');
 
   var template = `
@@ -54,26 +76,7 @@ function addCardTemplate() {
 
   container.innerHTML = template;
 
-  var toolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-    ['blockquote', 'code-block'],
-
-    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-    [{ 'direction': 'rtl' }],                         // text direction
-
-    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-
-    ['clean']                                         // remove formatting button
-  ];
-
+  let toolbarOptions = await getDeckSettings();
 
   frontEditor = new Quill('#front-editor', {
     modules: {
@@ -89,10 +92,11 @@ function addCardTemplate() {
       toolbar: toolbarOptions
     },
     theme: 'snow'
-  });
+  });;
 
   frontEditor.on('editor-change', frontUpdate);
   backEditor.on('editor-change', backUpdate);
+
 }
 
 function addCard() {
@@ -115,7 +119,7 @@ function addCard() {
   // refresh div to update card count
   $(".card-count-container").load(window.location.href + " #card-count");
   // reload button text
-  $(".top-button-container").load(window.location.href + " .study-now");
+  $(".top-button-container-outer").load(window.location.href + " .top-button-container-inner");
 
   // add success message
   addCardSuccess();

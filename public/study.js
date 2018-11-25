@@ -12,58 +12,37 @@ async function getCards() {
 }
 
 function shuffle(array) {
-    let counter = array.length;
+  let counter = array.length;
 
-    // While there are elements in the array
-    while (counter > 0) {
-        // Pick a random index
-        let index = Math.floor(Math.random() * counter);
+  // While there are elements in the array
+  while (counter > 0) {
+    // Pick a random index
+    let index = Math.floor(Math.random() * counter);
 
-        // Decrease counter by 1
-        counter--;
+    // Decrease counter by 1
+    counter--;
 
-        // And swap the last element with it
-        let temp = array[counter];
-        array[counter] = array[index];
-        array[index] = temp;
-    }
+    // And swap the last element with it
+    let temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
 
-    return array;
+  return array;
 }
 
-  var toolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-    ['blockquote', 'code-block'],
-
-    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-    [{ 'direction': 'rtl' }],                         // text direction
-
-    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-
-    ['clean']                                         // remove formatting button
-  ];
-
-
-document.querySelector('.top-button-container').addEventListener('click', function(e) {
+document.querySelector('.top-button-container-outer').addEventListener('click', async function(e) {
   if (e.target.classList.contains('study-now')) {
     // get the cards from the database
-    getCards().then(cardsArray => {
-      currectDeck = cardIterator(shuffle(cardsArray));
+    let cardsArray = await getCards();
+    // shuffle and set the deck for studying
+    currectDeck = cardIterator(shuffle(cardsArray));
+    // disable study button and change inner text
+    document.querySelector('.study-now').innerText = "Studying...";
+    document.querySelector('.study-now').disabled = true;
 
-      document.querySelector('.study-now').innerText = "Studying...";
-      document.querySelector('.study-now').disabled = true;
-
-      // Set first card
-      nextCard();
-    });
+    // Set the first card
+    nextCard();
   }
 });
 
@@ -125,7 +104,7 @@ document.querySelector('.study-container').addEventListener('click', function(e)
 });
 
 
-function nextCard() {
+async function nextCard() {
   const currentCard = currectDeck.next().value;
 
   if (currentCard !== undefined) {
@@ -164,6 +143,8 @@ function nextCard() {
     <input class="hiddenCardId" type="hidden" value="${currentCard.id}" />
     `;
 
+    let toolbarOptions = await getDeckSettings();
+
     frontEditor = new Quill('#front', {
       modules: {
         syntax: true,
@@ -180,55 +161,53 @@ function nextCard() {
       theme: 'snow'
     });
 
-  frontEditor.setContents(JSON.parse(currentCard.front));
-  backEditor.setContents(JSON.parse(currentCard.back));
-  backEditor.enable(false);
+    frontEditor.setContents(JSON.parse(currentCard.front));
+    backEditor.setContents(JSON.parse(currentCard.back));
+    backEditor.enable(false);
 
-} else {
-  // No more cards
-  document.querySelector('.study-container').innerHTML = '';
-  document.querySelector('.study-now').innerText = "Study Now";
-  document.querySelector('.study-now').disabled = false;
-  successMessage("You finished this deck!");
+  } else {
+    // No more cards
+    document.querySelector('.study-container').innerHTML = '';
+    document.querySelector('.study-now').innerText = "Study Now";
+    document.querySelector('.study-now').disabled = false;
+    successMessage("You finished this deck!");
+  }
 }
-}
 
-function deleteCard() {
+async function deleteCard() {
 
-    // get deck Id from url
-    var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-    // get the card id
-    var cardId = parseInt(document.querySelector('.hiddenCardId').value);
+  // get deck Id from url
+  var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+  // get the card id
+  var cardId = parseInt(document.querySelector('.hiddenCardId').value);
 
-    var card = {
-      cardId: cardId,
-      deckId: deckId
-    }
+  var card = {
+    cardId: cardId,
+    deckId: deckId
+  }
 
-    // perform AJAX request
-    var xhr = new XMLHttpRequest();
-    xhr.open("DELETE", "http://localhost:3030/delete-card", true);
-    xhr.setRequestHeader("Content-type", "application/json");
-    xhr.send(JSON.stringify(card));
+  // perform AJAX request
+  var xhr = new XMLHttpRequest();
+  xhr.open("DELETE", "http://localhost:3030/delete-card", true);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(card));
 
+  let cardsArray = await getCards();
 
-    getCards().then(cardsArray => {
-      if (cardsArray.length === 0) {
-        // refresh div to update card count
-        $("#card-count").load(window.location.href + " .card-count-container");
-        // reload button text
-        $(".top-button-container").load(window.location.href + " .study-now");
-        // reset study container
-        document.querySelector('.study-container').innerHTML = '';
-      } else {
-        // refresh div to update card count
-        $(".card-count-container").load(window.location.href + " #card-count");
-        // add success message
-        successMessage("Card deleted.");
-        nextCard();
-      }
-    });
-
+  if (cardsArray.length === 0) {
+    // refresh div to update card count
+    $("#card-count").load(window.location.href + " .card-count-container");
+    // reload button text
+    $(".top-button-container-outer").load(window.location.href + " .top-button-container-inner");
+    // reset study container
+    document.querySelector('.study-container').innerHTML = '';
+  } else {
+    // refresh div to update card count
+    $(".card-count-container").load(window.location.href + " #card-count");
+    // add success message
+    successMessage("Card deleted.");
+    nextCard();
+  }
 }
 
 function saveCard() {

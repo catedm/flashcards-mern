@@ -1,7 +1,9 @@
 bugs:
   - top button container / card count reloads after additions / deletions still buggy
-  
+  - add / delete / rename decks still buggy (sometimes ?!?!?)
+
 todo:
+  - refactor / organize global variables and functions
   - validate front and back input when adding cards
   - validate all input using Joi
   - escape HTML

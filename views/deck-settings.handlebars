@@ -1,0 +1,107 @@
+<nav class="uk-navbar-container" uk-navbar="mode: click">
+  <div class="uk-navbar-center">
+    <ul class="uk-navbar-nav">
+      <li><a href="/decks/{{currentDeck.id}}">Back to Deck<span class="uk-margin-small-left" uk-icon="icon: arrow-left"></a></li>
+      <li><a href="/">Decks<span class="uk-margin-small-left" uk-icon="icon: album"></a></li>
+      <li><a class="add-card" href="#add-card" uk-toggle>Add Card<span class="uk-margin-small-left" uk-icon="icon: plus-circle"></a></li>
+      <li><a class="all-cards" href="#all-cards" uk-toggle>All Cards<span class="uk-margin-small-left" uk-icon="icon: copy"></a></li>
+    </ul>
+  </div>
+</nav>
+<div class="uk-section uk-section-muted uk-padding-small uk-text-center">
+  <div class="uk-container">
+    <h5>{{currentDeck.title}} Toolbar Settings<span class="uk-margin-small-left" uk-icon="icon: settings"></h5>
+  </div>
+</div>
+<div id="all-cards" class="uk-flex-top uk-modal-container" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-padding-remove">
+    <div class="uk-padding-small" style="background: linear-gradient(to left, #28a5f5, #1e87f0);">
+      <h4 class="browse-cards-title">Browse Cards: {{ currentDeck.title }}</h4>
+    </div>
+    <div class="uk-grid-small uk-child-width-expand@s uk-padding" uk-grid>
+      <div class="uk-width-1-1">
+        <input type="text" class="search-cards uk-input uk-margin-bottom" name="" value="" placeholder="search cards by front or back value">
+        <div class="all-cards-table-container" style="height: 300px; overflow: scroll;">
+          <table class="uk-table uk-table-striped uk-table-hover">
+            <thead>
+              <tr>
+                <th>Front</th>
+                <th>Back</th>
+                <th>ID</th>
+              </tr>
+            </thead>
+            <tbody class="all-cards-table-body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="browse-success-message">
+        </div>
+        <div class="all-cards-edit-card-container">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="add-card" class="uk-flex-top" uk-modal>
+  <div class="add-card-form-container uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <div class="uk-padding-small uk-margin-bottom" style="background: linear-gradient(to left, #28a5f5, #1e87f0);">
+      <h4 class="browse-cards-title">Add Card: {{ currentDeck.title }}</h4>
+    </div>
+    <form class="add-card-form">
+    </form>
+  </div>
+</div>
+<div class="uk-section uk-padding-remove uk-margin-large-top">
+  <div class="uk-container uk-container-small uk-height-large uk-padding-remove">
+    <div class="toolbar-options">
+      <div class="checkboxes-container uk-margin uk-grid-small uk-child-width-auto uk-grid">
+          <label><input class="uk-checkbox" type="checkbox" value="bold">Bold</label>
+          <label><input class="uk-checkbox" type="checkbox" value="italic">Italic</label>
+          <label><input class="uk-checkbox" type="checkbox" value="underline">Underline</label>
+          <label><input class="uk-checkbox" type="checkbox" value="strike">Strike</label>
+          <label><input class="uk-checkbox" type="checkbox" value="blockquote">Blockquote</label>
+          <label><input class="uk-checkbox" type="checkbox" value="code-block">Code-block</label>
+          <label><input class="uk-checkbox" type="checkbox" value="clean">Remove Format</label>
+          <label><input class="uk-checkbox" type="checkbox" value="header-1">Header 1</label>
+          <label><input class="uk-checkbox" type="checkbox" value="header-2">Header 2</label>
+          <label><input class="uk-checkbox" type="checkbox" value="list-ordered">List: ordered</label>
+          <label><input class="uk-checkbox" type="checkbox" value="list-bullet">List: bullet</label>
+          <label><input class="uk-checkbox" type="checkbox" value="script-super">Script: super</label>
+          <label><input class="uk-checkbox" type="checkbox" value="script-sub">Script: sub</label>
+          <label><input class="uk-checkbox" type="checkbox" value="indent--">Indent: -1</label>
+          <label><input class="uk-checkbox" type="checkbox" value="indent-+">Indent: +1</label>
+          <label><input class="uk-checkbox" type="checkbox" value="direction-rtl">Direction: rtl</label>
+          <label><input class="uk-checkbox" type="checkbox" value="size">Size</label>
+          <label><input class="uk-checkbox" type="checkbox" value="header">Header</label>
+          <label><input class="uk-checkbox" type="checkbox" value="color">Color</label>
+          <label><input class="uk-checkbox" type="checkbox" value="background">Background</label>
+          <label><input class="uk-checkbox" type="checkbox" value="font">Font</label>
+          <label><input class="uk-checkbox" type="checkbox" value="align">Align</label>
+      </div>
+      <div id="toolbar-settings-editor">
+      </div>
+      <p class="uk-align-right uk-margin-top">
+        <button class="uk-button uk-button-primary" onclick="clearAllOptions()">Clear All</button>
+        <button class="uk-button uk-button-primary" onclick="selectAllOptions()">Select All</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Include the Quill library -->
+<script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+<script src="/add-card.js"></script>
+<script src="/browse-cards.js"></script>
+<script src="/toolbar-settings.js"></script>

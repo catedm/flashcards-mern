@@ -16,6 +16,10 @@
   border: 1px solid #1e87f0;
 }
 
+.uk-checkbox {
+  margin-right: 5px;
+}
+
 svg {
   pointer-events: none;
 }
@@ -53,4 +57,15 @@ h4.browse-cards-title {
 
 .uk-nav li>a {
   display: inline-block;
+}
+
+.uk-navbar-container {
+  background: -webkit-gradient(linear, right top, left top, from(#28a5f5), to(#1e87f0)) !important;
+  background: linear-gradient(to left, #28a5f5, #1e87f0) !important;
+  color: #fff;
+}
+
+.uk-navbar-nav>li>a,
+.uk-navbar-nav>li.uk-active>a {
+  color: #fff;
 }

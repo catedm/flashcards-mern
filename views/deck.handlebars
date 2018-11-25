@@ -1,9 +1,10 @@
 <nav class="uk-navbar-container uk-margin" uk-navbar="mode: click">
   <div class="uk-navbar-center">
     <ul class="uk-navbar-nav">
-      <li><a href="/">Decks</a></li>
-      <li><a class="add-card" href="#add-card" uk-toggle>Add Card</a></li>
-      <li><a class="all-cards" href="#all-cards" uk-toggle>All Cards</a></li>
+      <li><a href="/">Decks<span class="uk-margin-small-left" uk-icon="icon: album"></a></li>
+      <li><a class="add-card" href="#add-card" uk-toggle>Add Card<span class="uk-margin-small-left" uk-icon="icon: plus-circle"></a></li>
+      <li><a class="all-cards" href="#all-cards" uk-toggle>All Cards<span class="uk-margin-small-left" uk-icon="icon: copy"></a></li>
+      <li><a href="/decks/settings/{{currentDeck.id}}">Toolbar<span class="uk-margin-small-left" uk-icon="icon: settings"></a></li>
     </ul>
   </div>
 </nav>
@@ -11,7 +12,7 @@
 <div id="all-cards" class="uk-flex-top uk-modal-container" uk-modal>
   <div class="uk-modal-dialog uk-modal-body uk-padding-remove">
     <div class="uk-padding-small" style="background: linear-gradient(to left, #28a5f5, #1e87f0);">
-      <h4 class="browse-cards-title">Browse Cards in {{ currentDeck.title }}</h4>
+      <h4 class="browse-cards-title">Browse Cards: {{ currentDeck.title }}</h4>
     </div>
     <div class="uk-grid-small uk-child-width-expand@s uk-padding" uk-grid>
       <div class="uk-width-1-1">
@@ -41,6 +42,9 @@
 </div>
 <div id="add-card" class="uk-flex-top" uk-modal>
   <div class="add-card-form-container uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <div class="uk-padding-small uk-margin-bottom" style="background: linear-gradient(to left, #28a5f5, #1e87f0);">
+      <h4 class="browse-cards-title">Add Card: {{ currentDeck.title }}</h4>
+    </div>
     <form class="add-card-form">
     </form>
   </div>
@@ -59,12 +63,14 @@
         </h4>
       </div>
     </div>
-    <div class="top-button-container uk-margin-top">
-      {{#eq currentDeck.cards.length 0}}
-        <button class="add-card uk-align-center uk-button uk-button-primary" href="#add-card" uk-toggle>Add First Card!</button>
-        {{else}}
-          <button class="study-now uk-align-center uk-button uk-button-primary">Study Now</button>
-      {{/eq}}
+    <div class="top-button-container-outer uk-margin-top">
+      <div class="top-button-container-inner">
+        {{#eq currentDeck.cards.length 0}}
+          <button class="add-card uk-align-center uk-button uk-button-primary" href="#add-card" uk-toggle>Add First Card!</button>
+          {{else}}
+            <button class="study-now uk-align-center uk-button uk-button-primary">Study Now</button>
+        {{/eq}}
+      </div>
     </div>
     <div class="success-container"></div>
     <div class="study-container uk-container uk-container-small uk-margin-bottom">

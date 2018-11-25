@@ -1,0 +1,25 @@
+- a deck is added
+- all options are included by default
+- toolbar settings page is selected
+  - a copy of the array stored in the database is made and stored in a new variable
+    - this happens in the set toolbarOptionsCopy function
+  - all checkboxes are matched back to the settings in the database and are selected (checked)
+  - the toolbar options in the database are looped through and added to the quill editor
+  - when a checkbox is selected
+    - if it is in the DOM, it is removed from the DOM AND from the COPY of the toolbar options array
+    - if is it NOT in the DOM, it is added to the quill editor and it is added to the COPY of the toolbarOptions array
+
+  - when selecting and removing is happening, it will either be updated via XHR or via a submit button click
+
+
+- what needs to be solved:
+  - how to deal with object options / select options in the toolbar settings and how they correspond to input values in the DOM
+
+
+- object options: ex. { header: 1 }
+  - in the initialzeCheckboxes function
+    - if option is obj
+      - initialize a sting
+      - build a string like 'header:1' out of the object
+      - check if the DOM values array has that string
+      - if it does, set checked to true

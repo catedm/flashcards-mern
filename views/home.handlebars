@@ -1,8 +1,8 @@
-<nav class="uk-navbar-container uk-margin" uk-navbar="mode: click">
+<nav class="uk-navbar-container uk-margin-bottom" uk-navbar="mode: click">
   <div class="uk-navbar-center">
     <ul class="uk-navbar-nav">
-      <li class="uk-active"><a href="/">Decks</a></li>
-      <li><a href="#add-deck-modal" uk-toggle="">Add Deck</a></li>
+      <li class="uk-active"><a href="/">Decks<span class="uk-margin-small-left" uk-icon="icon: album"></a></li>
+      <li><a href="#add-deck-modal" uk-toggle="">Add Deck<span class="uk-margin-small-left" uk-icon="icon: plus-circle"></a></li>
     </ul>
   </div>
 </nav>
@@ -66,6 +66,7 @@
                   <div uk-dropdown="pos: bottom-justify; mode: click" class="uk-padding-small">
                     <ul class="uk-nav uk-dropdown-nav">
                       <li><span class="uk-margin-small-right" uk-icon="icon: pencil"></span><a href="#rename-deck-modal" class="rename-deck" uk-toggle>Rename</a></li>
+                      <li><span class="uk-margin-small-right" uk-icon="icon: settings"></span><a href="/decks/settings/{{this._id}}" class="deck-settings">Toolbar</a></li>
                       <li><span class="uk-margin-small-right" uk-icon="icon: trash"></span><a href="#delete-deck-modal" class="delete-deck" uk-toggle>Delete</a></li>
                     </ul>
                   </div>

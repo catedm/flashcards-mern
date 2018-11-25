@@ -83,7 +83,7 @@ editCardContainer.addEventListener('click', function(e) {
 });
 
 // Template for editing / deleting cards cards
-function editCardTemplate(front, back, id) {
+async function editCardTemplate(front, back, id) {
 
   var template = `
   <div class="uk-grid-small uk-child-width-expand@s" uk-grid>
@@ -117,27 +117,9 @@ function editCardTemplate(front, back, id) {
 
   editCardContainer.innerHTML = template;
 
-  var toolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-    ['blockquote', 'code-block'],
-
-    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-    [{ 'direction': 'rtl' }],                         // text direction
-
-    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-
-    ['clean']                                         // remove formatting button
-  ];
-
-
+  let toolbarOptions = await getDeckSettings();
+  
+  // get the deck settings from the api settings endpoint
   frontEditor = new Quill('#front-editor-all-cards', {
     modules: {
       syntax: true,
@@ -156,6 +138,7 @@ function editCardTemplate(front, back, id) {
 
   frontEditor.setContents(JSON.parse(front));
   backEditor.setContents(JSON.parse(back));
+
 }
 
 function deleteCardFromAllCardsBrowse() {
@@ -177,9 +160,9 @@ function deleteCardFromAllCardsBrowse() {
     xhr.send(JSON.stringify(card));
 
     // refresh div to update card count
-    $("#card-count").load(window.location.href + " .card-count-container");
+    $(".card-count-container").load(window.location.href + " #card-count");
     // reload button text
-    $(".top-button-container").load(window.location.href + " .study-now");
+    $(".top-button-container-outer").load(window.location.href + " .top-button-container-inner");
     // remove row with card in it from table
     removeRow(cardId);
     // remove front and back of card
@@ -242,12 +225,14 @@ function clearSuccess() {
   }, 2000);
 };
 
-// initialze array for filtering
-var cards = [];
+// initialze array for filtering (see findMatches() function)
+var cards;
 // get cards from api endpoint
 getCards().then(data => cards = data);
 
 document.querySelector('.search-cards').addEventListener('click', function(e) {
+  // when the search bar is selected, the cards needs to be refreshed from the database
+  // otherwise, already deleted cards will show up in the search
   // get cards from api endpoint
   getCards().then(data => cards = data);
 });

@@ -3,12 +3,16 @@ const router = express.Router();
 var helpers = require('handlebars-helpers')();
 const { Deck, generateCardId } = require('../models/decks');
 
-router.get('/', async (req, res, next) => {
+router.get('/decks', async (req, res, next) => {
   Deck.find(function(e, deck) {
     res.render('home.handlebars', {
       decks: deck
     })
   })
+});
+
+router.get('/', (req, res, next) => {
+  res.redirect('/decks');
 });
 
 router.get('/decks/:id', async (req, res, next) => {
@@ -18,7 +22,17 @@ router.get('/decks/:id', async (req, res, next) => {
 
   res.render('deck.handlebars', {
     currentDeck: deck
-  })
+  });
+});
+
+router.get('/decks/settings/:id', async (req, res, next) => {
+  const deck = await Deck.findById(req.params.id).catch(err => (err));
+
+  if (!deck) return res.status(404).send('Deck with the given id not found.');
+
+  res.render('deck-settings.handlebars', {
+    currentDeck: deck
+  });
 });
 
 router.post('/add-deck', async (req, res, next) => {
@@ -72,6 +86,17 @@ router.put('/save-card', async (req, res, next) => {
 
   // save the new cards to the database
   deck = await Deck.findOneAndUpdate({ _id: req.body.deckId }, { $set: { cards: deck.cards } }, { new: true });
+  deck = await deck.save();
+  res.send(deck);
+});
+
+router.put('/update-toolbarsettings', async (req, res, next) => {
+  // grab deck from database
+  let deck = await Deck.findById(req.body.deckId).catch(err => (err));
+
+
+  // save the new settings to the database
+  deck = await Deck.findOneAndUpdate({ _id: req.body.deckId }, { $set: { settings: req.body.toolbarOptions } }, { new: true });
   deck = await deck.save();
   res.send(deck);
 });
