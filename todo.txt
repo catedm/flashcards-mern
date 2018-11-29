@@ -1,9 +1,16 @@
 bugs:
   - top button container / card count reloads after additions / deletions still buggy
   - add / delete / rename decks still buggy (sometimes ?!?!?)
+  - ALL jquery LOADs are buggy...
 
 todo:
   - refactor / organize global variables and functions
-  - validate front and back input when adding cards
   - validate all input using Joi
   - escape HTML
+
+ideas to do:
+  - progress bar / gameify
+    - how many correct in a row
+    - on fire
+  - deck sharing / user profiles
+  - verbatim mode

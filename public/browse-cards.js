@@ -1,91 +1,43 @@
-var frontEditor;
-var backEditor;
-var allCardsMenuLink = document.querySelector('.all-cards');
-var allCardsTable = document.querySelector('.all-cards-table-body');
-var editCardContainer = document.querySelector('.all-cards-edit-card-container');
-var searchInput = document.querySelector('.search-cards');
-var allCardsModalBackground = document.querySelector('#all-cards');
+// global DOM selector variables
 var browseSuccessMessage = document.querySelector('.browse-success-message');
+var allCardsTableBody = document.querySelector('.all-cards-table-body')
+var allCardsEditCardContainer = document.querySelector('.all-cards-edit-card-container')
+var searchCardsInput = document.querySelector('.search-cards')
+var allCardsMenuLink = document.querySelector('.all-cards')
+// Javascript hook into UI kit frontend framework to work with modal closing functionality
 var { on } = UIkit.util;
 
+var browseCardsModule = (function () {
+  var frontEditor;
+  var backEditor;
 
-// get cards in current deck from api endpoint
-async function getCards() {
-  var url = `http://localhost:3030/api/decks/${window.location.href.substr(window.location.href.lastIndexOf('/') + 1)}/cards`;
-  var response = await fetch(url);
-  var responseData = await response.json();
-  return responseData;
-}
+  // function for dynamically building the all cards browse table
+  var buildAllCardsBrowseTable = async function () {
+    // declare html var
+    let html = ``;
+    // get cards from API endpoint
+    var cardsArray = await getCards();
 
-// populate the all cards modal table with the cards in the current deck
-allCardsMenuLink.addEventListener('click', function() {
-  buildAllCardsBrowseTable();
-});
-
-// function for dynamically building the all cards browse table
-function buildAllCardsBrowseTable() {
-  // declare html var
-  var html = ``;
-  // get cards from API endpoint
-  getCards().then(cardsArray => {
-    cardsArray.forEach(function(card) {
+    cardsArray.forEach(function (card) {
       // get clean strings for front and back card values
       var cleanFrontString = JSON.parse(card.front).ops[0].insert.trim();
       var cleanBackString = JSON.parse(card.back).ops[0].insert.trim();
       // add table rows to the html output
       html += `
-      <tr class="card-row card-${card.id}">
-        <td class="uk-text-truncate">${cleanFrontString}</td>
-        <td class="uk-text-truncate">${cleanBackString}</td>
-        <td>${card.id}</td>
-      </tr>`;
+    <tr class="card-row card-${card.id}">
+      <td class="uk-text-truncate">${cleanFrontString}</td>
+      <td class="uk-text-truncate">${cleanBackString}</td>
+      <td>${card.id}</td>
+    </tr>`;
     })
     // add the html to the table
-    allCardsTable.innerHTML = html;
-  });
-}
-
-// clear card filter input and edit cards contents on modal close
-on($('#all-cards'), 'hide', () => {
-  searchInput.value = '';
-  clearEditCardContainerContents();
-});
-
-// change the edit card table every time a card is selected
-allCardsTable.addEventListener('click', function(e) {
-  // get the id of the card selected
-  var id = parseInt(e.target.parentNode.firstElementChild.nextElementSibling.nextElementSibling.innerText);
-  // get cards from api endpoint
-  getCards().then(cardsArray => {
-    // pick selected card from the deck
-    var card = cardsArray.find(card => card.id === id);
-    // add the edit card template to the view
-    editCardTemplate(card.front, card.back, card.id);
-  });
-});
-
-// listen for delete card click
-// rearrange buttons for delete card button click
-editCardContainer.addEventListener('click', function(e) {
-  if (e.target.classList.contains('all-cards-delete-card-first')) {
-    document.querySelector('.all-cards-delete-card-first').style.display = 'none';
-    document.querySelector('.add-card-submit').style.display = 'none';
-    document.querySelector('.are-you-sure-all-cards').style.display = 'inline';
-    document.querySelector('.yes-delete-all-cards').style.display = 'inline';
-    document.querySelector('.no-delete-all-cards').style.display = 'inline';
-  } else if (e.target.classList.contains('no-delete-all-cards') || e.target.classList.contains('do-not-delete-icon')) {
-    document.querySelector('.all-cards-delete-card-first').style.display = 'inline';
-    document.querySelector('.add-card-submit').style.display = 'inline';
-    document.querySelector('.are-you-sure-all-cards').style.display = 'none';
-    document.querySelector('.yes-delete-all-cards').style.display = 'none';
-    document.querySelector('.no-delete-all-cards').style.display = 'none';
+    allCardsTableBody.innerHTML = html;
   }
-});
 
-// Template for editing / deleting cards cards
-async function editCardTemplate(front, back, id) {
+  // Template for editing / deleting cards cards
+  var editCardTemplate = async function (front, back, id) {
 
-  var template = `
+    var template = `
   <div class="uk-grid-small uk-child-width-expand@s" uk-grid>
       <div>
         <div class="card-body uk-padding">
@@ -106,42 +58,39 @@ async function editCardTemplate(front, back, id) {
     <input type="hidden" name="backValue" value="">
     <input type="hidden" name="deckId" value="">
     <input type="hidden" name="cardId" value="${id}">
-    <p class="uk-text-right uk-margin-remove-bottom">
+    <p class="browse-cards-buttons uk-text-right uk-margin-remove-bottom">
       <button class="all-cards-delete-card-first uk-button uk-button-danger">Delete Card</button>
-      <span class="are-you-sure-all-cards uk-margin-right">Are you sure?</span>
-      <button class="yes-delete-all-cards uk-button uk-button-danger" onclick="deleteCardFromAllCardsBrowse()">Yes<span class="delete-icon" uk-icon="icon: trash" style="margin-left: 8px;"></span></button>
-      <button class="no-delete-all-cards uk-button uk-button-secondary">No<span class="do-not-delete-icon" uk-icon="icon: close" style="margin-left: 8px;"></span></button>
-      <input class="add-card-submit uk-button uk-button-primary" type="button" value="Save Changes" onclick="saveChanges()"/>
+      <input class="edit-card-submit uk-button uk-button-primary" type="button" value="Save Changes" />
     </p>
   `;
 
-  editCardContainer.innerHTML = template;
+  allCardsEditCardContainer.innerHTML = template;
 
-  let toolbarOptions = await getDeckSettings();
-  
-  // get the deck settings from the api settings endpoint
-  frontEditor = new Quill('#front-editor-all-cards', {
-    modules: {
-      syntax: true,
-      toolbar: toolbarOptions
-    },
-    theme: 'snow'
-  });
+    var toolbarOptions = await getDeckSettings();
 
-  backEditor = new Quill('#back-editor-all-cards', {
-    modules: {
-      syntax: true,
-      toolbar: toolbarOptions
-    },
-    theme: 'snow'
-  });
+    // get the deck settings from the api settings endpoint
+    frontEditor = new Quill('#front-editor-all-cards', {
+      modules: {
+        syntax: true,
+        toolbar: toolbarOptions
+      },
+      theme: 'snow'
+    });
 
-  frontEditor.setContents(JSON.parse(front));
-  backEditor.setContents(JSON.parse(back));
+    backEditor = new Quill('#back-editor-all-cards', {
+      modules: {
+        syntax: true,
+        toolbar: toolbarOptions
+      },
+      theme: 'snow'
+    });
 
-}
+    frontEditor.setContents(JSON.parse(front));
+    backEditor.setContents(JSON.parse(back));
 
-function deleteCardFromAllCardsBrowse() {
+  }
+
+  var deleteCardFromAllCardsBrowse = function () {
     // get deck Id from url
     var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
     // get the card id
@@ -169,72 +118,153 @@ function deleteCardFromAllCardsBrowse() {
     clearEditCardContainerContents();
     // add success message
     browseCardsSuccess("Card deleted.");
-}
-
-function removeRow(cardId) {
-  document.querySelector(`.card-${cardId}`).remove();
-}
-
-function clearEditCardContainerContents() {
-  editCardContainer.innerHTML = '';
-}
-
-function saveChanges() {
-  // get deck Id from url
-  var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-  // get the card id
-  var cardId = parseInt(document.querySelector('[name=cardId]').value);
-  // build card object to send to the database
-  var card = {
-    frontValue: JSON.stringify(frontEditor.getContents()),
-    backValue: JSON.stringify(backEditor.getContents()),
-    cardId: cardId,
-    deckId: deckId
   }
 
-  // perform AJAX request
-  var xhr = new XMLHttpRequest();
-  xhr.open("PUT", "http://localhost:3030/save-card", true);
-  xhr.setRequestHeader("Content-type", "application/json");
-  xhr.send(JSON.stringify(card));
+  var saveChanges = function () {
+    // get deck Id from url
+    var deckId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+    // get the card id
+    var cardId = parseInt(document.querySelector('[name=cardId]').value);
+    // build card object to send to the database
+    var card = {
+      frontValue: JSON.stringify(frontEditor.getContents()),
+      backValue: JSON.stringify(backEditor.getContents()),
+      cardId: cardId,
+      deckId: deckId
+    }
 
-  // rebuild table to reflect new value
-  buildAllCardsBrowseTable();
+    // perform AJAX request
+    var xhr = new XMLHttpRequest();
+    xhr.open("PUT", "http://localhost:3030/save-card", true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send(JSON.stringify(card));
 
-  // add success message
-  browseCardsSuccess("Card updated.");
-}
+    // rebuild table to reflect new value
+    buildAllCardsBrowseTable();
 
-function browseCardsSuccess(message) {
-  var classesToAdd = ['add-card-success', 'uk-alert-success', 'uk-margin-bottom', 'uk-width-1-1'];
-  var successDiv = document.createElement('div');
-  successDiv.classList.add(...classesToAdd);
-  successDiv.setAttribute('uk-alert', '');
-  successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>${message}</p>`;
+    // add success message
+    browseCardsSuccess("Card updated.");
+  }
 
-  // add success message to the DOM
-  browseSuccessMessage.appendChild(successDiv);
+  var browseCardsSuccess = function (message) {
+    var classesToAdd = ['add-card-success', 'uk-alert-success', 'uk-margin-bottom', 'uk-width-1-1'];
+    var successDiv = document.createElement('div');
+    successDiv.classList.add(...classesToAdd);
+    successDiv.setAttribute('uk-alert', '');
+    successDiv.innerHTML = `<a class="uk-alert-close" uk-close></a><p>${message}</p>`;
 
-  // set timeout to clear success message
-  clearSuccess();
-}
+    // add success message to the DOM
+    browseSuccessMessage.appendChild(successDiv);
 
-function clearSuccess() {
-  setTimeout(function() {
-    document.querySelector('.add-card-success').remove();
-  }, 2000);
-};
+    // set timeout to clear success message
+    clearSuccess();
+  }
+
+  var setBrowseCardModalContentsToClear = function () {
+    // clear card filter input and edit cards contents on modal close
+    on($('#all-cards'), 'hide', () => {
+      searchCardsInput.value = '';
+      clearEditCardContainerContents();
+    });
+  }
+
+  var removeRow = function (cardId) {
+    document.querySelector(`.card-${cardId}`).remove();
+  }
+
+  var clearEditCardContainerContents = function () {
+    allCardsEditCardContainer.innerHTML = '';
+  }
+
+  var clearSuccess = function () {
+    setTimeout(function () {
+      document.querySelector('.add-card-success').remove();
+    }, 2000);
+  };
+
+  var toggleBrowseCardsButtonState = function(state) {
+    if (state === 'delete') {
+      return `
+      <span class="are-you-sure-all-cards uk-margin-right">Are you sure?</span>
+      <button class="yes-delete-all-cards uk-button uk-button-danger">Yes<span class="delete-icon" uk-icon="icon: trash" style="margin-left: 8px;"></span></button>
+      <button class="no-delete-all-cards uk-button uk-button-secondary">No<span class="do-not-delete-icon" uk-icon="icon: close" style="margin-left: 8px;"></span></button>
+     `
+    } else if (state === 'edit') {
+      return `
+      <button class="all-cards-delete-card-first uk-button uk-button-danger">Delete Card</button>
+      <input class="edit-card-submit uk-button uk-button-primary" type="button" value="Save Changes" />
+     `
+    }
+  }
+
+  return {
+    buildAllCardsBrowseTable,
+    editCardTemplate,
+    saveChanges,
+    deleteCardFromAllCardsBrowse,
+    setBrowseCardModalContentsToClear,
+    toggleBrowseCardsButtonState
+  }
+
+})();
+
+// set browse cards modal to clear content on modal close
+browseCardsModule.setBrowseCardModalContentsToClear();
+
+// use event bubbling to capture add card event on add card button click
+allCardsEditCardContainer.addEventListener('click', function (e) {
+  if (e.target.classList.contains('edit-card-submit')) {
+    browseCardsModule.saveChanges();
+    e.preventDefault();
+  } else if (e.target.classList.contains('yes-delete-all-cards')) {
+    browseCardsModule.deleteCardFromAllCardsBrowse();
+  }
+});
+
+// populate the all cards modal table with the cards in the current deck
+allCardsMenuLink.addEventListener('click', function () {
+  browseCardsModule.buildAllCardsBrowseTable();
+});
+
+// change the edit card table every time a card is selected
+allCardsTableBody.addEventListener('click', function (e) {
+  // get the id of the card selected
+  var id = parseInt(e.target.parentNode.firstElementChild.nextElementSibling.nextElementSibling.innerText);
+  // get cards from api endpoint
+  getCards().then(cardsArray => {
+    // pick selected card from the deck
+    var card = cardsArray.find(card => card.id === id);
+    // add the edit card template to the view
+    browseCardsModule.editCardTemplate(card.front, card.back, card.id);
+  });
+});
+
+// listen for delete card click
+// rearrange buttons for delete card button click
+allCardsEditCardContainer.addEventListener('click', function (e) {
+  // initialize a state variable to track state depending on button clicked
+  var state;
+  if (e.target.classList.contains('all-cards-delete-card-first')) {
+    // toggle the state to delete
+    state = 'delete';
+    document.querySelector('.browse-cards-buttons').innerHTML = browseCardsModule.toggleBrowseCardsButtonState(state);
+  } else if (e.target.classList.contains('no-delete-all-cards') || e.target.classList.contains('do-not-delete-icon')) {
+    // toggle the state to edit
+    state = 'edit';
+    document.querySelector('.browse-cards-buttons').innerHTML = browseCardsModule.toggleBrowseCardsButtonState(state);
+  }
+});
 
 // initialze array for filtering (see findMatches() function)
 var cards;
 // get cards from api endpoint
 getCards().then(data => cards = data);
 
-document.querySelector('.search-cards').addEventListener('click', function(e) {
+searchCardsInput.addEventListener('click', async function (e) {
   // when the search bar is selected, the cards needs to be refreshed from the database
   // otherwise, already deleted cards will show up in the search
   // get cards from api endpoint
-  getCards().then(data => cards = data);
+  cards = await getCards();
 });
 
 // find matches during filter
@@ -260,8 +290,8 @@ function displayMatches() {
     </tr>`;
   }).join('');
 
-  allCardsTable.innerHTML = html;
+  allCardsTableBody.innerHTML = html;
 }
 
 // event listener for typing in a search
-searchInput.addEventListener('keyup', displayMatches);
+searchCardsInput.addEventListener('keyup', displayMatches);

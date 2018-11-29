@@ -31,10 +31,7 @@ svg {
 .delete-card-first,
 .are-you-sure,
 .yes-delete,
-.no-delete,
-.are-you-sure-all-cards,
-.yes-delete-all-cards,
-.no-delete-all-cards
+.no-delete
  {
   display: none;
 }
