@@ -1,6 +1,4 @@
 bugs:
-  - top button container / card count reloads after additions / deletions still buggy
-  - add / delete / rename decks still buggy (sometimes ?!?!?)
   - ALL jquery LOADs are buggy...
 
 todo:
