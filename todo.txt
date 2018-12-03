@@ -8,7 +8,7 @@ todo:
   - validate all input using Joi
   - escape HTML
 
-ideas to do:
+ideas:
   - progress bar / gameify
     - how many correct in a row
     - on fire

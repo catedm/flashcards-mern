@@ -24,15 +24,7 @@ svg {
   pointer-events: none;
 }
 
-.card-back,
-.next-card,
-.save-card,
-.cancel-edit,
-.delete-card-first,
-.are-you-sure,
-.yes-delete,
-.no-delete
- {
+.card-back {
   display: none;
 }
 

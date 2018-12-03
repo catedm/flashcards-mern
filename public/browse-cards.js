@@ -215,8 +215,9 @@ browseCardsModule.setBrowseCardModalContentsToClear();
 allCardsEditCardContainer.addEventListener('click', function (e) {
   if (e.target.classList.contains('edit-card-submit')) {
     browseCardsModule.saveChanges();
-    e.preventDefault();
   } else if (e.target.classList.contains('yes-delete-all-cards')) {
+    browseCardsModule.deleteCardFromAllCardsBrowse();
+  } else if (e.target.classList.contains('delete-icon')) {
     browseCardsModule.deleteCardFromAllCardsBrowse();
   }
 });
