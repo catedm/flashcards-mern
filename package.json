@@ -7,10 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "David Cate",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "event-stream": "^3.3.4",
     "express": "4.16.4",
     "express-handlebars": "^3.0.0",
     "handlebars-helpers": "^0.10.0",
