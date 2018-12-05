@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const exphbs  = require('express-handlebars');
 const mongoose = require('mongoose');
+const database = require('./config/database');
 const app = express();
 
 
