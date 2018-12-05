@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const database = require('./config/database');
 const app = express();
 
+console.log(app.get('env'));
+
 if (app.get('env') === 'development') {
 mongoose.connect('mongodb://localhost/flashcard-app')
   .then(() => console.log('Connected to MongoDB...'))
