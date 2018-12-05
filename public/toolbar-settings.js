@@ -250,7 +250,7 @@ function sendSettingsToDatabase() {
 
   // perform AJAX request
   var xhr = new XMLHttpRequest();
-  xhr.open("PUT", "http://localhost:3030/update-toolbarsettings", true);
+  xhr.open("PUT", "/update-toolbarsettings", true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify(deckIdAndSettings));
 

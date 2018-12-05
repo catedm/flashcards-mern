@@ -104,7 +104,7 @@ var browseCardsModule = (function () {
 
     // perform AJAX request, pass card back to server
     var xhr = new XMLHttpRequest();
-    xhr.open("DELETE", "http://localhost:3030/delete-card", true);
+    xhr.open("DELETE", "/delete-card", true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(card));
 
@@ -135,7 +135,7 @@ var browseCardsModule = (function () {
 
     // perform AJAX request
     var xhr = new XMLHttpRequest();
-    xhr.open("PUT", "http://localhost:3030/save-card", true);
+    xhr.open("PUT", "/save-card", true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(card));
 

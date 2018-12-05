@@ -151,7 +151,7 @@ var addCardModule = (function () {
   var sendXHRRequest = function (card) {
     // perform XHR request
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3030/add-card", true);
+    xhr.open("POST", "/add-card", true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(card));
   }

@@ -74,7 +74,7 @@ var decksModule = (function () {
     // perform XHR request
     var xhr = new XMLHttpRequest();
     // set method
-    xhr.open(`${method}`, `http://localhost:3030/${url}`, true);
+    xhr.open(`${method}`, `/${url}`, true);
     // set content type
     xhr.setRequestHeader("Content-type", "application/json");
     // send object
