@@ -7,9 +7,11 @@ const database = require('./config/database');
 const app = express();
 
 
-mongoose.connect('mongodb://localhost/flashcard-app')
-  .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.log('Could not connect to MongoDB.', err));
+// mongoose.connect('mongodb://localhost/flashcard-app')
+//   .then(() => console.log('Connected to MongoDB...'))
+//   .catch(err => console.log('Could not connect to MongoDB.', err));
+
+mongoose.connect(database.url);
 
 // Routes
 const decks = require('./routes/decks');

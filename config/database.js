@@ -1,4 +1,4 @@
 module.exports = {
 	// the database url to connect
-	url : 'mongodb://node:node@mongo.onmodulus.net:27017/uwO3mypu'
+	url : 'mongodb://david_remote:mpphth1992@ec2-52-71-252-224.compute-1.amazonaws.com:27017/dummyDB'
 }
