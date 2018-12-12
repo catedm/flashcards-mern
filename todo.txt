@@ -1,8 +1,10 @@
 bugs:
   - ALL jquery LOADs are buggy...
+  - must solve event stream depedency issue
 
 todo:
   - refactor / organize global variables and functions
+    - toolbar settings
   - validate all input using Joi
   - escape HTML
 
@@ -12,3 +14,5 @@ ideas:
     - on fire
   - deck sharing / user profiles
   - verbatim mode
+
+

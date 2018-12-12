@@ -335,6 +335,7 @@ studyContainer.addEventListener('click', function (e) {
     studyModule.toggleStudyState('edit');
   } else if (e.target.classList.contains('save-card')) {
     studyModule.saveCard();
+    studyModule.toggleStudyState('answer');
     backEditor.enable(false);
   } else if (e.target.classList.contains('cancel-edit')) {
     studyModule.toggleStudyState('answer');

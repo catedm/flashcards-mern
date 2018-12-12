@@ -5,8 +5,8 @@ const exphbs  = require('express-handlebars');
 const mongoose = require('mongoose');
 const database = require('./config/database');
 const app = express();
-
-console.log(app.get('env'));
+const session = require("express-session");
+const createError = require('http-errors');
 
 if (app.get('env') === 'development') {
 mongoose.connect('mongodb://localhost/flashcard-app')
@@ -38,6 +38,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Set routes
 app.use('/', decks);
 app.use('/api/decks', api);
+
+// set user registration stuff
+app.use(session({
+  secret: 'asbkhdfjbsdahjkf378459hfdsaE',
+  resave: true,
+  saveUninitialized: false
+}));
 
 // PORT environment variable
 const port = process.env.PORT || 3030;
