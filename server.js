@@ -3,17 +3,16 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const exphbs  = require('express-handlebars');
 const mongoose = require('mongoose');
-const database = require('./config/database');
 const app = express();
 const session = require("express-session");
-const createError = require('http-errors');
+const keys = require('./config/keys');
 
 if (app.get('env') === 'development') {
 mongoose.connect('mongodb://localhost/flashcard-app')
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.log('Could not connect to MongoDB.', err));
 } else if (app.get('env') === 'production') {
-  mongoose.connect(database.url);
+  mongoose.connect(keys.mongoURI);
 }
 
 // Routes
