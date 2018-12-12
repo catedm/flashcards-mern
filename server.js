@@ -3,16 +3,20 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const exphbs  = require('express-handlebars');
 const mongoose = require('mongoose');
-const app = express();
-const session = require("express-session");
+const cookieSession = require('cookie-session');
+const passport = require('passport');
 const keys = require('./config/keys');
+require('./models/user');
+require('./services/passport');
+
+const app = express();
 
 if (app.get('env') === 'development') {
-mongoose.connect('mongodb://localhost/flashcard-app')
+mongoose.connect(keys.mongoURI)
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.log('Could not connect to MongoDB.', err));
 } else if (app.get('env') === 'production') {
-  mongoose.connect('mongodb://david:mpphth1992@ds119652.mlab.com:19652/flashcards');
+  mongoose.connect(keys.mongoURI);
 }
 
 // Routes
@@ -38,12 +42,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', decks);
 app.use('/api/decks', api);
 
-// set user registration stuff
-app.use(session({
-  secret: 'asbkhdfjbsdahjkf378459hfdsaE',
-  resave: true,
-  saveUninitialized: false
-}));
+// this statement tells express that it needs to use cookies in our app
+app.use(
+	cookieSession({
+		// this must be entered in milliseconds
+		// the following is equal to 30 days in milliseconds
+		maxAge: 30 * 24 * 60 * 60 * 1000,
+		// load in cookie encryption from keys file
+		keys: [keys.cookieKey]
+	})
+);
+// these app.use calls are adding middleware to our application
+// middleware modifies / preprocesses the incoming requests before they are sent to route handlers
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./routes/authRoutes')(app);
 
 // PORT environment variable
 const port = process.env.PORT || 3030;
