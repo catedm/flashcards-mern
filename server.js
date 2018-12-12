@@ -12,7 +12,7 @@ mongoose.connect('mongodb://localhost/flashcard-app')
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.log('Could not connect to MongoDB.', err));
 } else if (app.get('env') === 'production') {
-  mongoose.connect(keys.mongoURI);
+  mongoose.connect('mongodb://david:mpphth1992@ds119652.mlab.com:19652/flashcards');
 }
 
 // Routes
